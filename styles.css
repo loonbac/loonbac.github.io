@@ -382,3 +382,159 @@ body.theme-flip{animation:flick .4s steps(2,start);}
 }
 
 [data-theme="light"] .badge::after{opacity:.2;}
+
+ /* ==== PROYECTOS ==== */
+.panel.projects {
+  display:flex;
+  flex-direction:column;
+  gap:1.1rem;
+}
+
+.panel-heading {
+  font-size:clamp(1.3rem,2.8vw,1.7rem);
+  margin:0;
+  line-height:1.15;
+  letter-spacing:.5px;
+  color:var(--c-accent);
+  text-shadow:0 0 4px rgba(37,200,200,.45);
+}
+
+.proj-grid {
+  --min: 250px;
+  display:grid;
+  gap:1rem;
+  grid-template-columns: repeat(auto-fill, minmax(var(--min),1fr));
+}
+
+@media (max-width:640px){
+  .proj-grid { --min: 210px; gap:.85rem; }
+}
+@media (max-width:420px){
+  .proj-grid { --min: 100%; }
+}
+
+.proj-card {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  border:2px solid var(--c-line);
+  background:var(--c-bg-alt);
+  overflow:hidden;
+  min-height:320px;
+  isolation:isolate;
+  transition:var(--transition);
+}
+
+.proj-card::before,
+.proj-card::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+  transition:var(--transition);
+}
+
+.proj-card::before {
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),transparent 65%),
+    repeating-linear-gradient(to bottom,rgba(255,255,255,.05),rgba(255,255,255,.05) 2px,transparent 2px,transparent 4px);
+  mix-blend-mode:overlay;
+}
+
+.proj-card::after {
+  background:radial-gradient(circle at 85% 15%,rgba(37,200,200,.3),transparent 60%);
+}
+
+.proj-card:hover {
+  border-color:var(--c-accent);
+  transform:translateY(-4px);
+}
+
+.proj-card:hover::before { opacity:.75; }
+.proj-card:hover::after { opacity:.35; }
+
+.proj-media {
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#050505;
+  border-bottom:2px solid var(--c-line);
+  overflow:hidden;
+}
+
+.proj-media img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  filter:brightness(0.92) contrast(1.05);
+  transition:var(--transition);
+}
+
+.proj-card:hover .proj-media img {
+  transform:scale(1.05);
+  filter:brightness(1) contrast(1.1);
+}
+
+.proj-body {
+  display:flex;
+  flex-direction:column;
+  padding:.85rem .85rem 1rem;
+  gap:.6rem;
+  flex:1;
+}
+
+.proj-name {
+  margin:0;
+  font-size:1.05rem;
+  line-height:1.2;
+  letter-spacing:.5px;
+}
+
+.proj-desc {
+  margin:0;
+  flex:1;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  font-size:.68rem;
+  line-height:1.35;
+  max-width:56ch;
+}
+
+.proj-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+  margin-top:.25rem;
+}
+
+.btn.slim {
+  padding:.5rem .85rem;
+  font-size:.62rem;
+  letter-spacing:.9px;
+}
+
+.proj-note {
+  margin:0;
+  opacity:.7;
+}
+
+.tag {
+  background:var(--c-accent-soft);
+  color:#fff;
+  padding:.15rem .4rem;
+  border-radius:4px;
+  font-size:.55rem;
+  border:1px solid var(--c-accent);
+  font-weight:600;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+/* Ajuste para tema claro */
+[data-theme="light"] .proj-card { background:var(--c-panel); }
+[data-theme="light"] .proj-card::before { opacity:.4; }
