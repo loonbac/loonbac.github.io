@@ -27,12 +27,10 @@
   const yearEl = document.getElementById('year');
   if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // System preference sync if no manual choice
   const mq = window.matchMedia('(prefers-color-scheme: light)');
   mq.addEventListener('change', e=>{
     if(!localStorage.getItem('retro-theme')){
       setTheme(e.matches?'light':'dark');
     }
   });
-
 })();
