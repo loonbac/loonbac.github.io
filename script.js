@@ -35,6 +35,4 @@
     }
   });
 
-  // Optional: if quieres que el panel intro llene un mínimo de la pantalla:
-  // document.getElementById('intro').style.minHeight = 'clamp(320px, 60vh, 620px)';
 })();
