@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LoonBac21 :: Página de Prueba Retro</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Página de prueba retro de LoonBac21 (streamer, ciberseguridad, Python y videojuegos).">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" as="style">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top-bar">
+  <div class="bar-inner">
+    <span class="prompt" aria-hidden="true">loonbac21@retro:~$</span>
+    <span class="blip" aria-hidden="true"></span>
+    <button class="btn-mini scan-toggle" id="scanToggle" aria-pressed="true" title="Activar / desactivar líneas CRT">CRT</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Panel Intro -->
+  <section class="panel intro">
+    <div class="avatar">
+      <div class="pixel-frame">
+        <img src="avatar.png" alt="Avatar de LoonBac21 (placeholder)">
+      </div>
+    </div>
+    <div class="intro-text">
+      <h1>Hola, soy <span class="accent">LoonBac21</span></h1>
+      <p class="mono line" id="typeLine"
+         data-text="Streamer en Twitch, fan de la ciberseguridad, Python y los videojuegos. Bienvenido a esta página de prueba retro.">
+        <!-- typing injected -->
+      </p>
+      <div class="badges-row">
+        <span class="badge">Twitch</span>
+        <span class="badge">CiberSec</span>
+        <span class="badge">Python</span>
+        <span class="badge">Gaming</span>
+        <span class="badge accent-badge">CiberSen Group</span>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://twitch.tv/loonbac21" target="_blank" rel="noopener">Ir al Canal ▶</a>
+        <button class="btn ghost" id="flipTheme" type="button">Tema <span class="theme-name">Dark</span></button>
+      </div>
+    </div>
+    <div class="corner deco" aria-hidden="true"></div>
+  </section>
+
+  <!-- Tabs -->
+  <section class="panel tabs">
+    <nav class="tab-bar" aria-label="Secciones de info">
+      <button class="tab active" data-tab="tech">Tech</button>
+      <button class="tab" data-tab="social">Social</button>
+      <div class="slider" aria-hidden="true"></div>
+    </nav>
+    <div class="tab-content">
+      <div class="tab-pane active" id="pane-tech">
+        <ul class="icon-line">
+          <li class="icon-box" title="Python">
+            <span class="scan-icon">PY</span><span class="label">Python</span>
+          </li>
+          <li class="icon-box" title="Bash / Shell">
+            <span class="scan-icon">$</span><span class="label">Shell</span>
+          </li>
+          <li class="icon-box" title="CyberSec">
+            <span class="scan-icon">⚿</span><span class="label">Sec</span>
+          </li>
+          <li class="icon-box" title="Automatización">
+            <span class="scan-icon">⟳</span><span class="label">Auto</span>
+          </li>
+          <li class="icon-box" title="Streaming">
+            <span class="scan-icon">◉</span><span class="label">Live</span>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane" id="pane-social">
+        <div class="social-grid">
+          <div class="social-card">
+            <span class="tag">Twitch</span>
+            <p class="mono small">twitch.tv/loonbac21</p>
+          </div>
+          <div class="social-card">
+            <span class="tag">Discord</span>
+            <p class="mono small">Usuario: drixecfamer</p>
+          </div>
+          <div class="social-card">
+            <span class="tag">Grupo</span>
+            <p class="mono small">CiberSen Group</p>
+          </div>
+          <div class="social-card">
+            <span class="tag">Nota</span>
+            <p class="mono small">Solo muestra - sin formulario.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de Bloques -->
+  <section class="blocks-grid" aria-label="Bloques de contenido">
+    <article class="block">
+      <div class="ascii" aria-hidden="true">
+        <pre>
+  ██   ██
+ ████ ████
+██████████
+██████████
+ ████████
+  ██████
+   ████
+    ██
+        </pre>
+      </div>
+      <h2>Streaming</h2>
+      <p class="mono small">
+        Gameplay, aprendizaje y buena vibra en directo. Puedes abrir el reproductor emergente para pruebas rápidas.
+      </p>
+      <a class="btn slim" href="https://player.twitch.tv/?channel=loonbac21" target="_blank" rel="noopener">Player Popup</a>
+    </article>
+
+    <article class="block">
+      <div class="ascii" aria-hidden="true">
+        <pre>
+██████████
+██  ██  ██
+██  ██  ██
+██  ██  ██
+██████████
+███ ██ ███
+██  ██  ██
+██  ██  ██
+        </pre>
+      </div>
+      <h2>Ciberseguridad</h2>
+      <p class="mono small">
+        Interés en retos CTF, hardening y prácticas ofensivas / defensivas para aprender y compartir.
+      </p>
+      <button class="btn slim ghost" type="button" data-ping="Sec!">Ping</button>
+    </article>
+
+    <article class="block">
+      <div class="ascii" aria-hidden="true">
+        <pre>
+████████
+██
+███████
+██
+████████
+  ██
+  ██
+  ██
+        </pre>
+      </div>
+      <h2>Python</h2>
+      <p class="mono small">
+        Scripts, automatización, bots simples, herramientas de soporte y prototipos rápidos.
+      </p>
+      <button class="btn slim ghost" type="button" data-ping="print('Hola')">Snippet</button>
+    </article>
+
+    <article class="block">
+      <div class="ascii" aria-hidden="true">
+        <pre>
+██████
+██  ██
+██  ██
+██  ██
+██████
+  ██
+██████
+        </pre>
+      </div>
+      <h2>Videojuegos</h2>
+      <p class="mono small">
+        Análisis técnico, cooperativo, estrategia e indie. Diversión y curiosidad constante.
+      </p>
+      <button class="btn slim ghost" type="button" data-ping="GG">GG</button>
+    </article>
+  </section>
+
+  <section class="panel note">
+    <p class="mono tiny">
+      Esta es una página de prueba estilo retro (no formulario de contacto). Personaliza textos, ASCII y paleta según quieras. 
+      Para un embed real de Twitch incrusta el script de Twitch dentro de un panel aparte.
+    </p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="mono tiny">&copy; <span id="year"></span> LoonBac21 · Demo Retro · Hecha para experimentar estilos (Beige / Negro / Blanco / Turquesa).</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
