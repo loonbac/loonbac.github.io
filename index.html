@@ -19,8 +19,8 @@
 </header>
 
 <main class="wrap">
-  <!-- PANEL INTRO (único grande) -->
-  <section class="panel intro">
+  <!-- PANEL INTRO -->
+  <section class="panel intro" id="intro">
     <div class="avatar">
       <div class="pixel-frame avatar-placeholder">
         <span>Avatar de<br>LoonBac21<br>(placeholder)</span>
@@ -46,10 +46,10 @@
     <div class="corner deco" aria-hidden="true"></div>
   </section>
 
-  <!-- PANEL TABS (solo TECH) -->
-  <section class="panel tabs only-tech">
-    <nav class="tab-bar" aria-label="Sección tecnológica">
-      <button class="tab active" data-tab="tech">Tech</button>
+  <!-- PANEL TECH -->
+  <section class="panel tabs only-tech" aria-labelledby="tech-title">
+    <nav class="tab-bar" aria-label="Tech">
+      <span class="tab active" data-tab="tech" id="tech-title">Tech</span>
       <div class="slider" aria-hidden="true"></div>
     </nav>
     <div class="tab-content">
@@ -64,10 +64,10 @@
           <li class="icon-box" title="Ciberseguridad">
             <span class="scan-icon">⚿</span><span class="label">Sec</span>
           </li>
-            <li class="icon-box" title="Automatización">
+          <li class="icon-box" title="Automatización">
             <span class="scan-icon">⟳</span><span class="label">Auto</span>
           </li>
-          <li class="icon-box" title="Streaming">
+          <li class="icon-box" title="Streaming / Live">
             <span class="scan-icon">◉</span><span class="label">Live</span>
           </li>
         </ul>
