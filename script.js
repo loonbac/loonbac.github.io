@@ -1,5 +1,3 @@
-/* Usa tu script.js actual y no hace falta cambiar nada para los proyectos.
-   Si quieres actualizar aria-pressed del botón de tema, aquí tienes la versión completa: */
 (function(){
   const body = document.body;
   const themeBtn = document.getElementById('flipTheme');
@@ -10,9 +8,9 @@
     document.documentElement.setAttribute('data-theme',t);
     body.classList.add('theme-flip');
     setTimeout(()=>body.classList.remove('theme-flip'),450);
-    const label = themeBtn?.querySelector('.theme-name');
-    if(label) label.textContent = t==='dark'?'Dark':'Light';
     if(themeBtn){
+      const label = themeBtn.querySelector('.theme-name');
+      if(label) label.textContent = t==='dark'?'Dark':'Light';
       const isDark = t==='dark';
       themeBtn.setAttribute('aria-pressed', String(isDark));
       themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
