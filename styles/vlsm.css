@@ -1,3 +1,4 @@
+/* ==================== ESTILOS VLSM ESPECÍFICOS ==================== */
 .vlsm-header {
     display: flex;
     justify-content: space-between;
@@ -8,6 +9,13 @@
 
 .header-content {
     flex: 1;
+}
+
+.header-buttons {
+    display: flex;
+    gap: .7rem;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .title-row {
@@ -32,6 +40,7 @@
     letter-spacing: .5px;
 }
 
+/* ==================== CRÉDITOS COMPACTOS ==================== */
 .credits-badge {
     display: inline-flex;
     align-items: center;
@@ -181,6 +190,16 @@
     .credits-badge {
         align-self: flex-start;
     }
+    
+    .vlsm-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .header-buttons {
+        justify-content: center;
+        margin-top: .5rem;
+    }
 }
 
 .input-section,
@@ -312,6 +331,7 @@
     font-size: .6rem;
 }
 
+/* ==================== RESULTADOS ==================== */
 .results-container {
     margin-top: 2rem;
 }
@@ -468,6 +488,7 @@
     background: linear-gradient(135deg, var(--c-bg-alt), var(--c-bg));
 }
 
+/* ==================== EJEMPLOS ==================== */
 .examples-grid {
     display: grid;
     gap: 1rem;
@@ -511,6 +532,7 @@
     color: var(--c-text);
 }
 
+/* ==================== ERROR ==================== */
 .error-message {
     display: flex;
     align-items: center;
@@ -534,6 +556,7 @@
     flex: 1;
 }
 
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 600px) {
     .vlsm-header {
         flex-direction: column;
@@ -567,6 +590,11 @@
     .result-value {
         text-align: left;
     }
+    
+    .header-buttons {
+        flex-direction: column;
+        gap: .5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -580,6 +608,7 @@
     }
 }
 
+/* ==================== TEMA CLARO ==================== */
 [data-theme="light"] .calc-input {
     background: #fff;
 }
