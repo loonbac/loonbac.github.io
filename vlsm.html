@@ -26,6 +26,19 @@
           <span class="accent">🌐 VLSM Calculator</span>
         </h1>
         <p class="mono vlsm-subtitle">Variable Length Subnet Mask - Subneteo Avanzado</p>
+        
+        <!-- CRÉDITOS AL CREADOR -->
+        <div class="credits-section">
+          <div class="credits-container">
+            <span class="credits-icon">👨‍💻</span>
+            <span class="credits-text">Algoritmo Python por:</span>
+            <a class="credits-link" href="https://github.com/Yokonad" target="_blank" rel="noopener noreferrer">
+              <span class="github-icon">⚡</span>
+              Yokonad
+              <span class="external-icon">↗</span>
+            </a>
+          </div>
+        </div>
       </div>
       <a class="btn slim" href="index.html">← Volver</a>
     </div>
@@ -624,7 +637,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .vlsm-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 1rem;
 }
@@ -640,10 +653,85 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .vlsm-subtitle {
-    margin: .3rem 0 0;
+    margin: .3rem 0 .8rem;
     font-size: .75rem;
     color: var(--c-text-dim);
     letter-spacing: .5px;
+}
+
+/* ==================== CRÉDITOS ==================== */
+.credits-section {
+    margin-top: .5rem;
+}
+
+.credits-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    padding: .6rem .8rem;
+    background: var(--c-bg-alt);
+    border: 2px solid var(--c-line);
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.credits-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(37, 200, 200, .03), rgba(37, 200, 200, .03) 2px, transparent 2px, transparent 4px);
+    pointer-events: none;
+}
+
+.credits-icon {
+    font-size: .9rem;
+    filter: drop-shadow(0 0 2px rgba(37, 200, 200, .5));
+}
+
+.credits-text {
+    font-family: var(--mono);
+    font-size: .65rem;
+    color: var(--c-text-dim);
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+.credits-link {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    text-decoration: none;
+    color: var(--c-accent);
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: .3rem .6rem;
+    border: 1px solid var(--c-accent);
+    background: rgba(37, 200, 200, .1);
+    transition: var(--transition);
+    position: relative;
+}
+
+.credits-link:hover,
+.credits-link:focus {
+    background: var(--c-accent);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(37, 200, 200, .4);
+}
+
+.github-icon {
+    font-size: .8rem;
+    line-height: 1;
+}
+
+.external-icon {
+    font-size: .6rem;
+    line-height: 1;
+    opacity: .8;
 }
 
 .vlsm-tabs {
@@ -717,6 +805,14 @@ document.addEventListener('DOMContentLoaded', function() {
     .calc-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+    }
+    
+    .vlsm-header {
+        align-items: stretch;
+    }
+    
+    .credits-container {
+        justify-content: center;
     }
 }
 
@@ -1108,6 +1204,12 @@ document.addEventListener('DOMContentLoaded', function() {
     .result-value {
         text-align: left;
     }
+    
+    .credits-container {
+        flex-direction: column;
+        text-align: center;
+        gap: .3rem;
+    }
 }
 
 /* ==================== TEMA CLARO ==================== */
@@ -1127,6 +1229,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 [data-theme="light"] .calc-btn:hover {
     background: linear-gradient(135deg, #333, var(--c-text)) !important;
+}
+
+[data-theme="light"] .credits-link {
+    border-color: var(--c-text);
+    color: var(--c-text);
+    background: rgba(18, 18, 18, .1);
+}
+
+[data-theme="light"] .credits-link:hover {
+    background: var(--c-text);
+    color: #fff;
 }
 </style>
 </body>
