@@ -1,7 +1,6 @@
 (function(){
   const body = document.body;
   const themeBtn = document.getElementById('flipTheme');
-  const scanToggle = document.getElementById('scanToggle');
 
   function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
   function setTheme(t){
@@ -22,12 +21,6 @@
   setTheme(saved || 'dark');
 
   themeBtn?.addEventListener('click',()=>setTheme(getTheme()==='dark'?'light':'dark'));
-
-  scanToggle?.addEventListener('click',()=>{
-    const off = body.classList.toggle('no-scan');
-    scanToggle.setAttribute('aria-pressed', String(!off));
-    scanToggle.textContent = off?'CRT Off':'CRT';
-  });
 
   const yearEl = document.getElementById('year');
   if(yearEl) yearEl.textContent = new Date().getFullYear();
