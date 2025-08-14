@@ -42,19 +42,16 @@
       speechBubble.classList.add('show');
     });
     
-    console.log('Globo mostrado:', randomMessage, 'en posición fija:', avatarCenterX, avatarBottom + 20);
     
     setTimeout(() => {
       speechBubble.classList.remove('show');
       isShowing = false;
-      console.log('Globo ocultado');
     }, 1500);
   }
   
   if(avatarFrame){
     avatarFrame.addEventListener('click', function(e){
       e.preventDefault();
-      console.log('Click en avatar detectado');
       showBubble();
     });
   }
