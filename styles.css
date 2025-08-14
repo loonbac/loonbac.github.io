@@ -117,10 +117,8 @@ body::before{
   pointer-events:none;
 }
 
-/* GLOBO DE TEXTO 8-BIT - ANIMACIÓN ARREGLADA */
 .speech-bubble{
   position:fixed;
-  /* Posición inicial fuera de pantalla para evitar saltos */
   top:-1000px;
   left:-1000px;
   background:var(--c-panel);
@@ -142,12 +140,10 @@ body::before{
     inset 0 0 0 1px rgba(37,200,200,.3);
   letter-spacing:1px;
   text-transform:uppercase;
-  /* Preparar para animación suave */
   transform:translateX(-50%) scale(0.3);
   transition:opacity 0.3s ease, transform 0.3s cubic-bezier(.68,-.55,.265,1.55), visibility 0s 0.3s;
 }
 
-/* Puntita del globo hacia arriba */
 .bubble-tail-top{
   position:absolute;
   bottom:100%;
@@ -173,7 +169,6 @@ body::before{
   border-bottom:7px solid var(--c-panel);
 }
 
-/* Cuando está visible - animación suave sin saltos */
 .speech-bubble.show{
   visibility:visible;
   opacity:1;
@@ -181,7 +176,6 @@ body::before{
   transition:opacity 0.3s ease, transform 0.4s cubic-bezier(.68,-.55,.265,1.55), visibility 0s 0s;
 }
 
-/* Efectos retro en el globo */
 .speech-bubble::before{
   content:"";
   position:absolute;
