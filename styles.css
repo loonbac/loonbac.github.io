@@ -46,6 +46,8 @@ body{
   flex-direction:column;
   gap:1.1rem;
 }
+
+/* Scanlines siempre activas */
 body::before{
   content:"";
   position:fixed;
@@ -55,9 +57,7 @@ body::before{
   mix-blend-mode:lighten;
   opacity:.55;
   z-index:1;
-  transition:opacity .4s;
 }
-body.no-scan::before{opacity:0;}
 
 .top-bar{
   position:sticky;
@@ -307,7 +307,7 @@ body.no-scan::before{opacity:0;}
   filter:drop-shadow(0 0 4px var(--c-accent));
 }
 
-/* PROYECTOS - VUELTA AL DISEÑO ORIGINAL MEJORADO */
+/* PROYECTOS */
 .panel.projects { display:flex; flex-direction:column; gap:1.1rem; }
 .panel-heading {
   font-size:clamp(1.3rem,2.8vw,1.7rem);
@@ -360,7 +360,6 @@ body.no-scan::before{opacity:0;}
 .proj-card:hover::before{opacity:.75;}
 .proj-card:hover::after{opacity:.35;}
 
-/* VUELTA AL DISEÑO ORIGINAL 16:9 CON MEJORAS */
 .proj-media{
   position:relative;
   width:100%;
