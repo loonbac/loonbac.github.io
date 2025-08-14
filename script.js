@@ -20,7 +20,7 @@
   const avatarFrame = document.getElementById('avatarFrame');
   const speechBubble = document.getElementById('speechBubble');
   
-  const messages = ['¡Hola!', '¡Hey!', '¿Qué tal?', 'Saludos', '¡Hi!', 'Eyyy', '¡Buenas!'];
+  const messages = ['¡Holaa', '¡Im NOT OLD!', 'Bienvenido :D', 'Me gusta el Pollo a la Brasa', '¡Ressy tiene funciones ocultas!', 'EY EY EY', 'Soy Minecraft Player'];
   let isShowing = false;
   
   function showBubble(){
