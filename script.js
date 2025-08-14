@@ -1,6 +1,19 @@
 (function(){
   const body = document.body;
   const themeBtn = document.getElementById('flipTheme');
+  const avatarFrame = document.getElementById('avatarFrame');
+  const speechBubble = document.getElementById('speechBubble');
+
+  // Array de mensajes aleatorios para el globo
+  const messages = [
+    '¡Hola!',
+    '¡Hey!',
+    '¿Qué tal?',
+    'Saludos',
+    '¡Hi!',
+    'Eyyy',
+    'Holaaa'
+  ];
 
   function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
   function setTheme(t){
@@ -16,6 +29,32 @@
     }
     try{localStorage.setItem('retro-theme',t);}catch(e){}
   }
+
+  // Función para mostrar el globo de texto
+  function showSpeechBubble(){
+    if(speechBubble.classList.contains('show')) return; // No mostrar si ya está visible
+    
+    // Seleccionar mensaje aleatorio
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    speechBubble.querySelector('.bubble-content').textContent = randomMessage;
+    
+    // Mostrar globo
+    speechBubble.classList.add('show');
+    
+    // Ocultar después de 2 segundos
+    setTimeout(() => {
+      speechBubble.classList.remove('show');
+    }, 2000);
+  }
+
+  // Event listeners para el avatar
+  avatarFrame?.addEventListener('click', showSpeechBubble);
+  avatarFrame?.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      showSpeechBubble();
+    }
+  });
 
   const saved = localStorage.getItem('retro-theme');
   setTheme(saved || 'dark');
