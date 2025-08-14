@@ -117,8 +117,10 @@ body::before{
   pointer-events:none;
 }
 
+/* GLOBO DE TEXTO 8-BIT - ANIMACIÓN ARREGLADA */
 .speech-bubble{
   position:fixed;
+  /* Posición inicial fuera de pantalla para evitar saltos */
   top:-1000px;
   left:-1000px;
   background:var(--c-panel);
@@ -140,10 +142,12 @@ body::before{
     inset 0 0 0 1px rgba(37,200,200,.3);
   letter-spacing:1px;
   text-transform:uppercase;
+  /* Preparar para animación suave */
   transform:translateX(-50%) scale(0.3);
   transition:opacity 0.3s ease, transform 0.3s cubic-bezier(.68,-.55,.265,1.55), visibility 0s 0.3s;
 }
 
+/* Puntita del globo hacia arriba */
 .bubble-tail-top{
   position:absolute;
   bottom:100%;
@@ -169,6 +173,7 @@ body::before{
   border-bottom:7px solid var(--c-panel);
 }
 
+/* Cuando está visible - animación suave sin saltos */
 .speech-bubble.show{
   visibility:visible;
   opacity:1;
@@ -176,6 +181,7 @@ body::before{
   transition:opacity 0.3s ease, transform 0.4s cubic-bezier(.68,-.55,.265,1.55), visibility 0s 0s;
 }
 
+/* Efectos retro en el globo */
 .speech-bubble::before{
   content:"";
   position:absolute;
@@ -389,6 +395,28 @@ body::before{
 }
 .icon-box:hover::after{opacity:.55;transform:translateY(0);}
 
+/* NUEVO: Estilo para icon-box clickeable (VLSM) */
+.icon-box.icon-link{
+  cursor:pointer;
+  transition:var(--transition);
+}
+.icon-box.icon-link:hover{
+  border-color:var(--c-accent);
+  background:var(--c-accent-soft);
+  transform:translateY(-2px);
+  box-shadow:0 4px 8px rgba(37,200,200,.3);
+}
+.icon-box.icon-link:hover .scan-icon{
+  color:#fff;
+  text-shadow:0 0 4px rgba(255,255,255,.5);
+}
+.icon-box.icon-link:hover .label{
+  color:#fff;
+}
+.icon-box.icon-link:active{
+  transform:translateY(0);
+}
+
 .corner.deco{
   position:absolute;
   top:4px;
@@ -572,3 +600,6 @@ body.theme-flip{animation:flick .4s steps(2,start);}
 [data-theme="light"] .badge::after{opacity:.2;}
 [data-theme="light"] .proj-card{background:var(--c-panel);}
 [data-theme="light"] .proj-card::before{opacity:.4;}
+[data-theme="light"] .icon-box.icon-link:hover{
+  background:var(--c-text);
+}
