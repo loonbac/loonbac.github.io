@@ -1,19 +1,6 @@
 (function(){
   const body = document.body;
   const themeBtn = document.getElementById('flipTheme');
-  const avatarFrame = document.getElementById('avatarFrame');
-  const speechBubble = document.getElementById('speechBubble');
-
-  // Array de mensajes aleatorios para el globo
-  const messages = [
-    '¡Hola!',
-    '¡Hey!',
-    '¿Qué tal?',
-    'Saludos',
-    '¡Hi!',
-    'Eyyy',
-    'Holaaa'
-  ];
 
   function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
   function setTheme(t){
@@ -30,31 +17,55 @@
     try{localStorage.setItem('retro-theme',t);}catch(e){}
   }
 
-  // Función para mostrar el globo de texto
-  function showSpeechBubble(){
-    if(speechBubble.classList.contains('show')) return; // No mostrar si ya está visible
+  // GLOBO DE TEXTO - VERSIÓN ARREGLADA SIN SALTOS
+  const avatarFrame = document.getElementById('avatarFrame');
+  const speechBubble = document.getElementById('speechBubble');
+  
+  const messages = ['¡Hola!', '¡Hey!', '¿Qué tal?', 'Saludos', '¡Hi!', 'Eyyy', '¡Buenas!'];
+  let isShowing = false; // Prevenir clicks múltiples
+  
+  function showBubble(){
+    if(!speechBubble || !avatarFrame || isShowing) return;
     
-    // Seleccionar mensaje aleatorio
+    isShowing = true;
+    
+    // Calcular posición ANTES de mostrar
+    const rect = avatarFrame.getBoundingClientRect();
+    const avatarCenterX = rect.left + rect.width / 2;
+    const avatarBottom = rect.bottom;
+    
+    // Mensaje aleatorio
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     speechBubble.querySelector('.bubble-content').textContent = randomMessage;
     
-    // Mostrar globo
-    speechBubble.classList.add('show');
+    // PRIMERO: Posicionar el globo (mientras está invisible)
+    speechBubble.style.left = avatarCenterX + 'px';
+    speechBubble.style.top = (avatarBottom + 20) + 'px';
     
-    // Ocultar después de 2 segundos
+    // LUEGO: Usar requestAnimationFrame para asegurar que la posición se aplique
+    requestAnimationFrame(() => {
+      // DESPUÉS: Mostrar con animación
+      speechBubble.classList.add('show');
+    });
+    
+    console.log('Globo mostrado:', randomMessage, 'en posición fija:', avatarCenterX, avatarBottom + 20);
+    
+    // Ocultar después de 3 segundos
     setTimeout(() => {
       speechBubble.classList.remove('show');
-    }, 2000);
+      isShowing = false;
+      console.log('Globo ocultado');
+    }, 3000);
   }
-
-  // Event listeners para el avatar
-  avatarFrame?.addEventListener('click', showSpeechBubble);
-  avatarFrame?.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter' || e.key === ' '){
+  
+  // Event listener con debounce simple
+  if(avatarFrame){
+    avatarFrame.addEventListener('click', function(e){
       e.preventDefault();
-      showSpeechBubble();
-    }
-  });
+      console.log('Click en avatar detectado');
+      showBubble();
+    });
+  }
 
   const saved = localStorage.getItem('retro-theme');
   setTheme(saved || 'dark');
