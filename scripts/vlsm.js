@@ -356,9 +356,33 @@ function initTabs() {
     });
 }
 
+// ==================== SISTEMA DE TEMAS ====================
+function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
+function setTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    document.body.classList.add('theme-flip');
+    setTimeout(()=>document.body.classList.remove('theme-flip'),450);
+    const themeBtn = document.getElementById('flipTheme');
+    if(themeBtn){
+        const label = themeBtn.querySelector('.theme-name');
+        if(label) label.textContent = t==='dark'?'Dark':'Light';
+        const isDark = t==='dark';
+        themeBtn.setAttribute('aria-pressed', String(isDark));
+        themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+    }
+    try{localStorage.setItem('retro-theme',t);}catch(e){}
+}
+
 // ==================== INICIALIZACIÓN ====================
 document.addEventListener('DOMContentLoaded', function() {
     initTabs();
+    
+    // Inicializar tema
+    const saved = localStorage.getItem('retro-theme');
+    setTheme(saved || 'dark');
+    
+    const themeBtn = document.getElementById('flipTheme');
+    themeBtn?.addEventListener('click',()=>setTheme(getTheme()==='dark'?'light':'dark'));
     
     // Ejemplos rápidos
     document.getElementById('vlsm-ip').addEventListener('focus', function() {
