@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LoonBac21 :: VLSM Calculator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Calculadora VLSM (Variable Length Subnet Mask) - Herramienta profesional para subneteo avanzado.">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" as="style">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top-bar">
+  <div class="bar-inner">
+    <span class="prompt">loonbac21@drix:~$ vlsm-calculator</span>
+    <span class="blip" aria-hidden="true"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- PANEL HEADER -->
+  <section class="panel">
+    <div class="vlsm-header">
+      <div class="header-content">
+        <h1 class="vlsm-title">
+          <span class="accent">🌐 VLSM Calculator</span>
+        </h1>
+        <p class="mono vlsm-subtitle">Variable Length Subnet Mask - Subneteo Avanzado</p>
+      </div>
+      <a class="btn slim" href="index.html">← Volver</a>
+    </div>
+  </section>
+
+  <!-- PANEL CALCULADORA -->
+  <section class="panel">
+    <div class="vlsm-tabs">
+      <div class="tab-bar">
+        <button class="tab active" data-tab="vlsm" id="vlsm-tab">VLSM Subnets</button>
+        <button class="tab" data-tab="enlaces" id="enlaces-tab">Router Links</button>
+        <div class="slider" id="tab-slider"></div>
+      </div>
+      
+      <!-- TAB VLSM -->
+      <div class="tab-content">
+        <div class="tab-pane active" id="pane-vlsm">
+          <div class="calc-grid">
+            <div class="input-section">
+              <h3 class="section-title accent">Parámetros de Red</h3>
+              
+              <div class="input-group">
+                <label class="input-label">Red Base:</label>
+                <input type="text" id="vlsm-ip" placeholder="192.168.1.0" class="calc-input">
+              </div>
+              
+              <div class="input-group">
+                <label class="input-label">Prefijo Principal:</label>
+                <input type="number" id="vlsm-prefix" placeholder="24" min="1" max="30" class="calc-input">
+              </div>
+              
+              <div class="input-group">
+                <label class="input-label">Hosts por Subred:</label>
+                <div class="hosts-input-container">
+                  <input type="text" id="vlsm-hosts" placeholder="100, 50, 25, 10" class="calc-input">
+                  <small class="input-hint">Separados por comas (se ordenarán automáticamente)</small>
+                </div>
+              </div>
+              
+              <div class="calc-actions">
+                <button class="btn calc-btn" onclick="calcularVLSM()">
+                  <span class="btn-icon">⚡</span>
+                  Calcular VLSM
+                </button>
+                <button class="btn ghost" onclick="limpiarVLSM()">Limpiar</button>
+              </div>
+            </div>
+            
+            <div class="info-section">
+              <h3 class="section-title accent">¿Qué es VLSM?</h3>
+              <div class="info-content">
+                <p class="mono info-text">
+                  <strong>VLSM</strong> permite crear subredes de diferentes tamaños dentro de una red principal, 
+                  optimizando el uso de direcciones IP según las necesidades específicas.
+                </p>
+                <div class="info-benefits">
+                  <h4 class="benefit-title">Ventajas:</h4>
+                  <ul class="benefit-list">
+                    <li>Uso eficiente del espacio IP</li>
+                    <li>Reducción del desperdicio</li>
+                    <li>Diseño de red flexible</li>
+                    <li>Escalabilidad mejorada</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div id="vlsm-results" class="results-container"></div>
+        </div>
+        
+        <!-- TAB ENLACES -->
+        <div class="tab-pane" id="pane-enlaces">
+          <div class="calc-grid">
+            <div class="input-section">
+              <h3 class="section-title accent">Enlaces Router-to-Router</h3>
+              
+              <div class="input-group">
+                <label class="input-label">Red Base:</label>
+                <input type="text" id="enlaces-ip" placeholder="10.0.0.0" class="calc-input">
+              </div>
+              
+              <div class="input-group">
+                <label class="input-label">Prefijo Principal:</label>
+                <input type="number" id="enlaces-prefix" placeholder="16" min="1" max="30" class="calc-input">
+              </div>
+              
+              <div class="input-group">
+                <label class="input-label">Número de Enlaces:</label>
+                <input type="number" id="enlaces-count" placeholder="5" min="1" max="100" class="calc-input">
+                <small class="input-hint">Cada enlace usará una subred /30 (2 IPs útiles)</small>
+              </div>
+              
+              <div class="calc-actions">
+                <button class="btn calc-btn" onclick="calcularEnlaces()">
+                  <span class="btn-icon">🔗</span>
+                  Calcular Enlaces
+                </button>
+                <button class="btn ghost" onclick="limpiarEnlaces()">Limpiar</button>
+              </div>
+            </div>
+            
+            <div class="info-section">
+              <h3 class="section-title accent">Enlaces de Red</h3>
+              <div class="info-content">
+                <p class="mono info-text">
+                  Los <strong>enlaces punto a punto</strong> entre routers usan subredes /30, 
+                  proporcionando exactamente 2 IPs utilizables por enlace.
+                </p>
+                <div class="info-benefits">
+                  <h4 class="benefit-title">Características /30:</h4>
+                  <ul class="benefit-list">
+                    <li>2 IPs utilizables por enlace</li>
+                    <li>Máscara: 255.255.255.252</li>
+                    <li>Wildcard: 0.0.0.3</li>
+                    <li>Ideal para enlaces WAN</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div id="enlaces-results" class="results-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL EJEMPLOS -->
+  <section class="panel">
+    <h2 class="panel-heading">Ejemplos Prácticos</h2>
+    
+    <div class="examples-grid">
+      <div class="example-card">
+        <div class="example-header">
+          <span class="example-icon">🏢</span>
+          <h3 class="example-title">Empresa Pequeña</h3>
+        </div>
+        <div class="example-content">
+          <p class="mono example-text">
+            <strong>Red:</strong> 192.168.1.0/24<br>
+            <strong>Departamentos:</strong><br>
+            • IT: 30 hosts<br>
+            • Ventas: 20 hosts<br>
+            • Admin: 10 hosts<br>
+            <strong>Resultado:</strong> 3 subredes optimizadas
+          </p>
+        </div>
+      </div>
+      
+      <div class="example-card">
+        <div class="example-header">
+          <span class="example-icon">🏫</span>
+          <h3 class="example-title">Campus Universitario</h3>
+        </div>
+        <div class="example-content">
+          <p class="mono example-text">
+            <strong>Red:</strong> 10.0.0.0/16<br>
+            <strong>Edificios:</strong><br>
+            • Edificio A: 500 hosts<br>
+            • Edificio B: 300 hosts<br>
+            • Edificio C: 100 hosts<br>
+            <strong>Resultado:</strong> Subredes escalables
+          </p>
+        </div>
+      </div>
+      
+      <div class="example-card">
+        <div class="example-header">
+          <span class="example-icon">🔗</span>
+          <h3 class="example-title">Enlaces WAN</h3>
+        </div>
+        <div class="example-content">
+          <p class="mono example-text">
+            <strong>Red:</strong> 172.16.0.0/20<br>
+            <strong>Enlaces:</strong><br>
+            • Router A ↔ Router B<br>
+            • Router B ↔ Router C<br>
+            • Router C ↔ Router D<br>
+            <strong>Resultado:</strong> 3 enlaces /30
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="mono tiny">&copy; 2025 LoonBac21 · VLSM Calculator Professional Tool</p>
+</footer>
+
+<script>
+// ==================== FUNCIONES DE VALIDACIÓN ====================
+function validarIP(ip) {
+    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+}
+
+function validarPrefijo(prefijo) {
+    return prefijo >= 1 && prefijo <= 30;
+}
+
+function calcularPrefijoDesdeHosts(numHosts) {
+    return 32 - Math.ceil(Math.log2(numHosts + 2));
+}
+
+function calcularWildcard(mascara) {
+    const partes = mascara.split('.').map(Number);
+    return partes.map(parte => 255 - parte).join('.');
+}
+
+// ==================== FUNCIONES DE CONVERSIÓN IP ====================
+function ipToInt(ip) {
+    const partes = ip.split('.').map(Number);
+    return (partes[0] << 24) | (partes[1] << 16) | (partes[2] << 8) | partes[3];
+}
+
+function intToIP(int) {
+    return [
+        (int >>> 24) & 255,
+        (int >>> 16) & 255,
+        (int >>> 8) & 255,
+        int & 255
+    ].join('.');
+}
+
+function calcularMascara(prefijo) {
+    const mask = (0xFFFFFFFF << (32 - prefijo)) >>> 0;
+    return intToIP(mask);
+}
+
+// ==================== CÁLCULO VLSM ====================
+function calcularVLSM() {
+    const ipBase = document.getElementById('vlsm-ip').value.trim();
+    const prefijoStr = document.getElementById('vlsm-prefix').value.trim();
+    const hostsInput = document.getElementById('vlsm-hosts').value.trim();
+    const resultsDiv = document.getElementById('vlsm-results');
+    
+    // Validaciones
+    if (!ipBase || !prefijoStr || !hostsInput) {
+        mostrarError(resultsDiv, '⚠️ Por favor completa todos los campos');
+        return;
+    }
+    
+    if (!validarIP(ipBase)) {
+        mostrarError(resultsDiv, '❌ La dirección IP no es válida');
+        return;
+    }
+    
+    const prefijoPrincipal = parseInt(prefijoStr);
+    if (!validarPrefijo(prefijoPrincipal)) {
+        mostrarError(resultsDiv, '❌ El prefijo debe estar entre 1 y 30');
+        return;
+    }
+    
+    const hosts = hostsInput.split(',')
+        .map(h => parseInt(h.trim()))
+        .filter(h => h > 0)
+        .sort((a, b) => b - a);
+    
+    if (hosts.length === 0) {
+        mostrarError(resultsDiv, '❌ Ingresa al menos una cantidad de hosts válida');
+        return;
+    }
+    
+    try {
+        const resultado = procesarVLSM(ipBase, prefijoPrincipal, hosts);
+        if (typeof resultado === 'string') {
+            mostrarError(resultsDiv, resultado);
+        } else {
+            mostrarResultadosVLSM(resultado, resultsDiv);
+        }
+    } catch (error) {
+        mostrarError(resultsDiv, '❌ Error en el cálculo: ' + error.message);
+    }
+}
+
+function procesarVLSM(ipBase, prefijoPrincipal, hosts) {
+    const redPrincipalInt = ipToInt(ipBase) & (0xFFFFFFFF << (32 - prefijoPrincipal));
+    const redPrincipal = intToIP(redPrincipalInt);
+    const tamanoPrincipal = Math.pow(2, 32 - prefijoPrincipal);
+    
+    const subredes = [];
+    let redActualInt = redPrincipalInt;
+    
+    for (let i = 0; i < hosts.length; i++) {
+        const numHosts = hosts[i];
+        const prefijo = calcularPrefijoDesdeHosts(numHosts);
+        const tamanoSubred = Math.pow(2, 32 - prefijo);
+        
+        // Verificar que la subred cabe en la red principal
+        if (redActualInt + tamanoSubred > redPrincipalInt + tamanoPrincipal) {
+            return `❌ Error: No hay suficiente espacio para ${numHosts} hosts en la red ${redPrincipal}/${prefijoPrincipal}`;
+        }
+        
+        const redSubred = intToIP(redActualInt);
+        const mascara = calcularMascara(prefijo);
+        const wildcard = calcularWildcard(mascara);
+        const broadcast = intToIP(redActualInt + tamanoSubred - 1);
+        const primerHost = intToIP(redActualInt + 1);
+        const ultimoHost = intToIP(redActualInt + tamanoSubred - 2);
+        const hostsDisponibles = tamanoSubred - 2;
+        
+        subredes.push({
+            subred: `Subred ${i + 1}`,
+            direccionRed: redSubred,
+            mascara: mascara,
+            wildcard: wildcard,
+            prefijo: `/${prefijo}`,
+            rangoHosts: `${primerHost} - ${ultimoHost}`,
+            broadcast: broadcast,
+            hostsNecesarios: numHosts,
+            hostsDisponibles: hostsDisponibles
+        });
+        
+        redActualInt += tamanoSubred;
+    }
+    
+    return subredes;
+}
+
+// ==================== CÁLCULO ENLACES ====================
+function calcularEnlaces() {
+    const ipBase = document.getElementById('enlaces-ip').value.trim();
+    const prefijoStr = document.getElementById('enlaces-prefix').value.trim();
+    const enlacesStr = document.getElementById('enlaces-count').value.trim();
+    const resultsDiv = document.getElementById('enlaces-results');
+    
+    // Validaciones
+    if (!ipBase || !prefijoStr || !enlacesStr) {
+        mostrarError(resultsDiv, '⚠️ Por favor completa todos los campos');
+        return;
+    }
+    
+    if (!validarIP(ipBase)) {
+        mostrarError(resultsDiv, '❌ La dirección IP no es válida');
+        return;
+    }
+    
+    const prefijoPrincipal = parseInt(prefijoStr);
+    if (!validarPrefijo(prefijoPrincipal)) {
+        mostrarError(resultsDiv, '❌ El prefijo debe estar entre 1 y 30');
+        return;
+    }
+    
+    const numEnlaces = parseInt(enlacesStr);
+    if (numEnlaces < 1 || numEnlaces > 1000) {
+        mostrarError(resultsDiv, '❌ El número de enlaces debe estar entre 1 y 1000');
+        return;
+    }
+    
+    try {
+        const resultado = procesarEnlaces(ipBase, prefijoPrincipal, numEnlaces);
+        if (typeof resultado === 'string') {
+            mostrarError(resultsDiv, resultado);
+        } else {
+            mostrarResultadosEnlaces(resultado, resultsDiv);
+        }
+    } catch (error) {
+        mostrarError(resultsDiv, '❌ Error en el cálculo: ' + error.message);
+    }
+}
+
+function procesarEnlaces(ipBase, prefijoPrincipal, numEnlaces) {
+    const redPrincipalInt = ipToInt(ipBase) & (0xFFFFFFFF << (32 - prefijoPrincipal));
+    const redPrincipal = intToIP(redPrincipalInt);
+    const tamanoPrincipal = Math.pow(2, 32 - prefijoPrincipal);
+    
+    const enlaces = [];
+    let redActualInt = redPrincipalInt;
+    const tamanoEnlace = 4; // /30 = 4 IPs
+    
+    for (let i = 0; i < numEnlaces; i++) {
+        // Verificar que el enlace cabe en la red principal
+        if (redActualInt + tamanoEnlace > redPrincipalInt + tamanoPrincipal) {
+            return `❌ Error: No hay suficiente espacio para ${numEnlaces} enlaces en la red ${redPrincipal}/${prefijoPrincipal}`;
+        }
+        
+        const redEnlace = intToIP(redActualInt);
+        const mascara = "255.255.255.252";
+        const wildcard = "0.0.0.3";
+        const broadcast = intToIP(redActualInt + 3);
+        const ip1 = intToIP(redActualInt + 1);
+        const ip2 = intToIP(redActualInt + 2);
+        
+        enlaces.push({
+            enlace: `Enlace ${i + 1}`,
+            direccionRed: redEnlace,
+            mascara: mascara,
+            wildcard: wildcard,
+            prefijo: "/30",
+            ipsUtilizables: `${ip1} - ${ip2}`,
+            broadcast: broadcast
+        });
+        
+        redActualInt += tamanoEnlace;
+    }
+    
+    return enlaces;
+}
+
+// ==================== FUNCIONES DE INTERFAZ ====================
+function mostrarError(container, mensaje) {
+    container.innerHTML = `
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text">${mensaje}</span>
+        </div>
+    `;
+}
+
+function mostrarResultadosVLSM(subredes, container) {
+    let html = `
+        <div class="results-header">
+            <span class="results-icon">📊</span>
+            <h3 class="results-title">Resultados VLSM</h3>
+            <span class="results-count">${subredes.length} subredes generadas</span>
+        </div>
+        <div class="results-grid">
+    `;
+    
+    subredes.forEach((subred, index) => {
+        html += `
+            <div class="result-card vlsm-card">
+                <div class="card-header">
+                    <span class="card-number">${index + 1}</span>
+                    <h4 class="card-title">${subred.subred}</h4>
+                    <span class="card-badge">${subred.hostsNecesarios} hosts</span>
+                </div>
+                <div class="card-content">
+                    <div class="result-row">
+                        <span class="result-label">Red:</span>
+                        <span class="result-value network">${subred.direccionRed}${subred.prefijo}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Máscara:</span>
+                        <span class="result-value">${subred.mascara}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Wildcard:</span>
+                        <span class="result-value">${subred.wildcard}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Hosts:</span>
+                        <span class="result-value range">${subred.rangoHosts}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Broadcast:</span>
+                        <span class="result-value broadcast">${subred.broadcast}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Disponibles:</span>
+                        <span class="result-value available">${subred.hostsDisponibles} hosts</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function mostrarResultadosEnlaces(enlaces, container) {
+    let html = `
+        <div class="results-header">
+            <span class="results-icon">🔗</span>
+            <h3 class="results-title">Enlaces de Router</h3>
+            <span class="results-count">${enlaces.length} enlaces generados</span>
+        </div>
+        <div class="results-grid">
+    `;
+    
+    enlaces.forEach((enlace, index) => {
+        html += `
+            <div class="result-card enlace-card">
+                <div class="card-header">
+                    <span class="card-number">${index + 1}</span>
+                    <h4 class="card-title">${enlace.enlace}</h4>
+                    <span class="card-badge">/30</span>
+                </div>
+                <div class="card-content">
+                    <div class="result-row">
+                        <span class="result-label">Red:</span>
+                        <span class="result-value network">${enlace.direccionRed}${enlace.prefijo}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Máscara:</span>
+                        <span class="result-value">${enlace.mascara}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Wildcard:</span>
+                        <span class="result-value">${enlace.wildcard}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">IPs útiles:</span>
+                        <span class="result-value range">${enlace.ipsUtilizables}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Broadcast:</span>
+                        <span class="result-value broadcast">${enlace.broadcast}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function limpiarVLSM() {
+    document.getElementById('vlsm-ip').value = '';
+    document.getElementById('vlsm-prefix').value = '';
+    document.getElementById('vlsm-hosts').value = '';
+    document.getElementById('vlsm-results').innerHTML = '';
+}
+
+function limpiarEnlaces() {
+    document.getElementById('enlaces-ip').value = '';
+    document.getElementById('enlaces-prefix').value = '';
+    document.getElementById('enlaces-count').value = '';
+    document.getElementById('enlaces-results').innerHTML = '';
+}
+
+// ==================== SISTEMA DE TABS ====================
+function initTabs() {
+    const tabs = document.querySelectorAll('.tab');
+    const panes = document.querySelectorAll('.tab-pane');
+    const slider = document.getElementById('tab-slider');
+    
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+            // Remover active de todos
+            tabs.forEach(t => t.classList.remove('active'));
+            panes.forEach(p => p.classList.remove('active'));
+            
+            // Activar el clickeado
+            tab.classList.add('active');
+            const targetPane = document.getElementById(`pane-${tab.dataset.tab}`);
+            if (targetPane) {
+                targetPane.classList.add('active');
+            }
+            
+            // Mover slider
+            slider.style.left = `${index * 50}%`;
+        });
+    });
+}
+
+// ==================== INICIALIZACIÓN ====================
+document.addEventListener('DOMContentLoaded', function() {
+    initTabs();
+    
+    // Ejemplos rápidos
+    document.getElementById('vlsm-ip').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '192.168.1.0';
+        }
+    });
+    
+    document.getElementById('vlsm-prefix').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '24';
+        }
+    });
+    
+    document.getElementById('vlsm-hosts').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '100, 50, 25, 10';
+        }
+    });
+    
+    document.getElementById('enlaces-ip').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '10.0.0.0';
+        }
+    });
+    
+    document.getElementById('enlaces-prefix').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '16';
+        }
+    });
+    
+    document.getElementById('enlaces-count').addEventListener('focus', function() {
+        if (!this.value) {
+            this.value = '5';
+        }
+    });
+});
+</script>
+
+<style>
+/* ==================== ESTILOS VLSM ESPECÍFICOS ==================== */
+.vlsm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.vlsm-title {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    line-height: 1.2;
+}
+
+.vlsm-subtitle {
+    margin: .3rem 0 0;
+    font-size: .75rem;
+    color: var(--c-text-dim);
+    letter-spacing: .5px;
+}
+
+.vlsm-tabs {
+    margin-top: 1rem;
+}
+
+.tab-bar {
+    display: flex;
+    position: relative;
+    border-bottom: 2px solid var(--c-line);
+    background: var(--c-bg-alt);
+    margin-bottom: 1.5rem;
+}
+
+.tab {
+    flex: 1;
+    padding: .7rem .5rem .8rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: transparent;
+    border: 0;
+    color: var(--c-text-dim);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.tab.active {
+    color: var(--c-accent);
+}
+
+.tab:hover {
+    color: var(--c-accent);
+    background: rgba(37, 200, 200, .05);
+}
+
+.slider {
+    position: absolute;
+    bottom: -2px;
+    height: 2px;
+    background: var(--c-accent);
+    width: 50%;
+    left: 0;
+    box-shadow: 0 0 4px var(--c-accent);
+    transition: left .3s ease;
+}
+
+.tab-content {
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.calc-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .calc-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.input-section,
+.info-section {
+    background: var(--c-bg-alt);
+    border: 2px solid var(--c-line);
+    padding: 1.2rem;
+    position: relative;
+}
+
+.section-title {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: .4rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--c-text);
+    letter-spacing: .5px;
+}
+
+.calc-input {
+    width: 100%;
+    padding: .7rem;
+    font-family: var(--mono);
+    font-size: .75rem;
+    background: var(--c-bg);
+    border: 2px solid var(--c-line);
+    color: var(--c-text);
+    border-radius: 0;
+    transition: var(--transition);
+}
+
+.calc-input:focus {
+    outline: none;
+    border-color: var(--c-accent);
+    box-shadow: 0 0 0 2px rgba(37, 200, 200, .2);
+}
+
+.calc-input::placeholder {
+    color: var(--c-text-dim);
+    opacity: .8;
+}
+
+.hosts-input-container {
+    position: relative;
+}
+
+.input-hint {
+    display: block;
+    margin-top: .3rem;
+    font-family: var(--mono);
+    font-size: .6rem;
+    color: var(--c-text-dim);
+    line-height: 1.3;
+}
+
+.calc-actions {
+    display: flex;
+    gap: .7rem;
+    margin-top: 1.5rem;
+}
+
+.calc-btn {
+    background: linear-gradient(135deg, var(--c-accent-soft), var(--c-accent)) !important;
+    border-color: var(--c-accent) !important;
+    color: #fff !important;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(37, 200, 200, .3);
+    flex: 1;
+}
+
+.calc-btn:hover {
+    background: linear-gradient(135deg, var(--c-accent), var(--c-accent-soft)) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 200, 200, .4);
+}
+
+.calc-btn .btn-icon {
+    font-size: .9rem;
+    margin-right: .3rem;
+}
+
+.info-content {
+    font-size: .7rem;
+    line-height: 1.4;
+}
+
+.info-text {
+    margin: 0 0 1rem;
+    color: var(--c-text);
+}
+
+.benefit-title {
+    margin: 0 0 .5rem;
+    font-size: .75rem;
+    color: var(--c-accent);
+    font-weight: 600;
+}
+
+.benefit-list {
+    margin: 0;
+    padding-left: 1rem;
+    list-style: none;
+}
+
+.benefit-list li {
+    margin-bottom: .3rem;
+    position: relative;
+    font-family: var(--mono);
+    font-size: .65rem;
+}
+
+.benefit-list li::before {
+    content: '▶';
+    position: absolute;
+    left: -1rem;
+    color: var(--c-accent);
+    font-size: .6rem;
+}
+
+/* ==================== RESULTADOS ==================== */
+.results-container {
+    margin-top: 2rem;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: .8rem;
+    border-bottom: 2px solid var(--c-line);
+}
+
+.results-icon {
+    font-size: 1.2rem;
+}
+
+.results-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--c-accent);
+    font-weight: 700;
+    flex: 1;
+}
+
+.results-count {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--c-text-dim);
+    background: var(--c-bg-alt);
+    padding: .3rem .6rem;
+    border: 1px solid var(--c-line);
+}
+
+.results-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.result-card {
+    background: var(--c-bg-alt);
+    border: 2px solid var(--c-line);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+}
+
+.result-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 200, 200, .2);
+}
+
+.card-header {
+    background: var(--c-bg);
+    padding: .8rem 1rem;
+    border-bottom: 1px solid var(--c-line);
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+}
+
+.card-number {
+    background: var(--c-accent);
+    color: #fff;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.card-title {
+    margin: 0;
+    font-size: .8rem;
+    color: var(--c-text);
+    font-weight: 600;
+    flex: 1;
+}
+
+.card-badge {
+    background: var(--c-accent-soft);
+    color: #fff;
+    padding: .2rem .5rem;
+    font-family: var(--mono);
+    font-size: .6rem;
+    font-weight: 600;
+    border: 1px solid var(--c-accent);
+    letter-spacing: .5px;
+}
+
+.card-content {
+    padding: 1rem;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .6rem;
+    padding: .3rem 0;
+    border-bottom: 1px solid rgba(220, 212, 196, .1);
+}
+
+.result-row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.result-label {
+    font-family: var(--mono);
+    font-size: .65rem;
+    font-weight: 600;
+    color: var(--c-text-dim);
+    min-width: 4rem;
+}
+
+.result-value {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--c-text);
+    font-weight: 600;
+    text-align: right;
+}
+
+.result-value.network {
+    color: var(--c-accent);
+    font-weight: 700;
+}
+
+.result-value.range {
+    color: #4CAF50;
+}
+
+.result-value.broadcast {
+    color: #FF9800;
+}
+
+.result-value.available {
+    color: #2196F3;
+}
+
+.vlsm-card .card-header {
+    background: linear-gradient(135deg, var(--c-bg), var(--c-bg-alt));
+}
+
+.enlace-card .card-header {
+    background: linear-gradient(135deg, var(--c-bg-alt), var(--c-bg));
+}
+
+/* ==================== EJEMPLOS ==================== */
+.examples-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.example-card {
+    background: var(--c-bg-alt);
+    border: 2px solid var(--c-line);
+    padding: 1rem;
+    transition: var(--transition);
+}
+
+.example-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-2px);
+}
+
+.example-header {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin-bottom: .8rem;
+}
+
+.example-icon {
+    font-size: 1.2rem;
+}
+
+.example-title {
+    margin: 0;
+    font-size: .8rem;
+    color: var(--c-accent);
+    font-weight: 600;
+}
+
+.example-text {
+    margin: 0;
+    font-size: .65rem;
+    line-height: 1.5;
+    color: var(--c-text);
+}
+
+/* ==================== ERROR ==================== */
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: 1rem;
+    background: rgba(255, 107, 107, .1);
+    border: 2px solid rgba(255, 107, 107, .3);
+    color: #ff6b6b;
+    font-family: var(--mono);
+    font-size: .75rem;
+    font-weight: 600;
+    margin: 1rem 0;
+}
+
+.error-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.error-text {
+    flex: 1;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 600px) {
+    .vlsm-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .calc-actions {
+        flex-direction: column;
+    }
+    
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .examples-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-header {
+        flex-wrap: wrap;
+        gap: .5rem;
+    }
+    
+    .result-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .2rem;
+    }
+    
+    .result-value {
+        text-align: left;
+    }
+}
+
+/* ==================== TEMA CLARO ==================== */
+[data-theme="light"] .calc-input {
+    background: #fff;
+}
+
+[data-theme="light"] .error-message {
+    background: rgba(255, 107, 107, .15);
+    color: #d32f2f;
+}
+
+[data-theme="light"] .calc-btn {
+    background: linear-gradient(135deg, var(--c-text), #333) !important;
+    border-color: var(--c-text) !important;
+}
+
+[data-theme="light"] .calc-btn:hover {
+    background: linear-gradient(135deg, #333, var(--c-text)) !important;
+}
+</style>
+</body>
+</html>
