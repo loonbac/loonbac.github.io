@@ -70,7 +70,6 @@
   
   // Test visual inicial
   setTimeout(() => {
-    console.log('🧪 TEST: Expandiendo terminal por 3 segundos...');
     if(terminalOutput) {
       terminalOutput.classList.add('show');
       if(executedCommand) executedCommand.textContent = 'TEST';
@@ -78,7 +77,6 @@
       
       setTimeout(() => {
         terminalOutput.classList.remove('show');
-        console.log('🧪 TEST: Terminal colapsado');
       }, 3000);
     }
   }, 1000);
@@ -157,30 +155,22 @@
   }
   
   function showCommandOutput(command, output) {
-    console.log('🚀 === EJECUTANDO COMANDO ===');
-    console.log('Comando:', command);
-    console.log('Output:', output);
     
     if(!executedCommand || !commandResult || !terminalOutput) {
-      console.error('❌ ERROR: Elementos del terminal no encontrados');
       return;
     }
     
     // Mostrar comando ejecutado
     executedCommand.textContent = command;
-    console.log('✅ Comando asignado:', command);
     
     // Limpiar resultado anterior
     commandResult.textContent = '';
-    console.log('✅ Resultado limpiado');
     
     // EXPANDIR el terminal
     terminalOutput.classList.add('show');
-    console.log('✅ Clase "show" añadida - terminal debe expandirse');
     
     // Delay para que se vea la expansión
     setTimeout(() => {
-      console.log('⌨️ Empezando escritura...');
       // Escribir resultado letra por letra
       let i = 0;
       function typeChar() {
@@ -189,11 +179,9 @@
           i++;
           setTimeout(typeChar, 30);
         } else {
-          console.log('✅ Escritura completada - esperando 5 segundos');
           // Ocultar después de 5 segundos
           setTimeout(() => {
             hideOutput();
-            console.log('🔄 Terminal ocultado después de 5 segundos');
           }, 5000);
         }
       }
@@ -203,7 +191,6 @@
   
   function hideOutput() {
     if(terminalOutput) {
-      console.log('🔄 Ocultando terminal');
       terminalOutput.classList.remove('show');
     }
   }
@@ -216,7 +203,6 @@
   
   function executeCommand(cmd) {
     const normalizedCmd = cmd.toLowerCase().trim();
-    console.log('🎯 EJECUTANDO COMANDO:', normalizedCmd);
     
     // Buscar comando cifrado
     for(let [encryptedCmd, action] of commands) {
