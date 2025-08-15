@@ -15,11 +15,23 @@
 <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-<header class="top-bar">
-  <div class="bar-inner">
-    <span class="prompt">loonbac@drix:~$</span>
-    <span class="terminal-text" id="terminalText"></span>
-    <span class="blip" aria-hidden="true"></span>
+<header class="terminal-container" id="terminalContainer">
+  <!-- Línea principal del terminal -->
+  <div class="terminal-main">
+    <div class="bar-inner">
+      <span class="prompt">loonbac@drix:~$</span>
+      <span class="terminal-text" id="terminalText"></span>
+      <span class="blip" aria-hidden="true"></span>
+    </div>
+  </div>
+  
+  <!-- Línea de salida del comando -->
+  <div class="terminal-output" id="terminalOutput">
+    <div class="bar-inner">
+      <span class="prompt">loonbac@drix:~$</span>
+      <span class="executed-command" id="executedCommand"></span>
+    </div>
+    <div class="command-result" id="commandResult"></div>
   </div>
 </header>
 
@@ -157,23 +169,6 @@
           </div>
         </div>
       </article>
-
-      <!-- PLANTILLA NUEVO PROYECTO
-      <article class="proj-card">
-        <figure class="proj-media">
-          <img src="img/IMAGEN_NUEVO.jpg" alt="Nombre descriptivo del nuevo proyecto" loading="lazy">
-        </figure>
-        <div class="proj-body">
-          <h3 class="proj-name">Nombre Proyecto</h3>
-          <p class="proj-desc mono small">
-            Breve descripción (una o dos frases). Ajusta a tu gusto.
-          </p>
-          <div class="proj-actions">
-            <a class="btn slim" target="_blank" rel="noopener" href="URL_O_ARCHIVO">Visitar ↗</a>
-          </div>
-        </div>
-      </article>
-      -->
     </div><!-- /proj-grid -->
   </section>
 </main>
