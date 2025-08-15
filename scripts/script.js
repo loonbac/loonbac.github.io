@@ -17,76 +17,81 @@
     try{localStorage.setItem('retro-theme',t);}catch(e){}
   }
 
-  // GLOBO DE TEXTO - VERSIÓN ARREGLADA SIN SALTOS
+  // GLOBO DE TEXTO
   const avatarFrame = document.getElementById('avatarFrame');
   const speechBubble = document.getElementById('speechBubble');
   
   const messages = ['¡Hola!', '¡Hey!', '¿Qué tal?', 'Saludos', '¡Hi!', 'Eyyy', '¡Buenas!'];
-  let isShowing = false; // Prevenir clicks múltiples
+  let isShowing = false;
   
   function showBubble(){
     if(!speechBubble || !avatarFrame || isShowing) return;
     
     isShowing = true;
     
-    // Calcular posición ANTES de mostrar
     const rect = avatarFrame.getBoundingClientRect();
     const avatarCenterX = rect.left + rect.width / 2;
     const avatarBottom = rect.bottom;
     
-    // Mensaje aleatorio
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     speechBubble.querySelector('.bubble-content').textContent = randomMessage;
     
-    // PRIMERO: Posicionar el globo (mientras está invisible)
     speechBubble.style.left = avatarCenterX + 'px';
     speechBubble.style.top = (avatarBottom + 20) + 'px';
     
-    // LUEGO: Usar requestAnimationFrame para asegurar que la posición se aplique
     requestAnimationFrame(() => {
-      // DESPUÉS: Mostrar con animación
       speechBubble.classList.add('show');
     });
     
-    console.log('Globo mostrado:', randomMessage, 'en posición fija:', avatarCenterX, avatarBottom + 20);
-    
-    // Ocultar después de 3 segundos
     setTimeout(() => {
       speechBubble.classList.remove('show');
       isShowing = false;
-      console.log('Globo ocultado');
     }, 3000);
   }
   
-  // Event listener con debounce simple
   if(avatarFrame){
     avatarFrame.addEventListener('click', function(e){
       e.preventDefault();
-      console.log('Click en avatar detectado');
       showBubble();
     });
   }
 
-  // ==================== TERMINAL SIMPLIFICADO SIN SOLAPAMIENTO ====================
+  // ==================== TERMINAL ARREGLADO - SIN CLEARTERM ANTICIPADO ==================== 
   const terminalText = document.getElementById('terminalText');
-  const topBar = document.querySelector('.top-bar');
+  const terminalOutput = document.getElementById('terminalOutput');
+  const executedCommand = document.getElementById('executedCommand');
+  const commandResult = document.getElementById('commandResult');
+  const terminalContainer = document.getElementById('terminalContainer');
   
   let currentInput = '';
   let isTyping = false;
   let commandBuffer = [];
   let historyIndex = -1;
   
+  // Test visual inicial
+  setTimeout(() => {
+    console.log('🧪 TEST: Expandiendo terminal por 3 segundos...');
+    if(terminalOutput) {
+      terminalOutput.classList.add('show');
+      if(executedCommand) executedCommand.textContent = 'TEST';
+      if(commandResult) commandResult.textContent = 'Terminal funcionando correctamente';
+      
+      setTimeout(() => {
+        terminalOutput.classList.remove('show');
+        console.log('🧪 TEST: Terminal colapsado');
+      }, 3000);
+    }
+  }, 1000);
+  
   // Sistema de comandos cifrado
   const commands = new Map();
   
-  // Función para cifrar comandos (ROT13 + Base64)
   function encrypt(str) {
     return btoa(str.replace(/[a-zA-Z]/g, function(c) {
       return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
     }));
   }
   
-  // Función para descifrar comandos
   function decrypt(str) {
     try {
       const decoded = atob(str);
@@ -101,42 +106,43 @@
   // Comandos secretos cifrados
   commands.set(encrypt('get files'), () => {
     window.open('https://github.com/loonbac', '_blank');
-    clearTerminal();
+    clearTerminalOnly(); // Solo limpiar input, no ocultar output
   });
   
   commands.set(encrypt('admin'), () => {
     window.open('vlsm.html', '_self');
-    clearTerminal();
+    clearTerminalOnly();
   });
   
   commands.set(encrypt('secret'), () => {
     window.open('https://cybersen.online/secret', '_blank');
-    clearTerminal();
+    clearTerminalOnly();
   });
   
   commands.set(encrypt('matrix'), () => {
     document.body.style.animation = 'matrix-rain 2s ease-in-out';
     setTimeout(() => {
       document.body.style.animation = '';
-      clearTerminal();
+      clearTerminalOnly();
     }, 2000);
   });
   
   commands.set(encrypt('konami'), () => {
     triggerKonamiEffect();
-    clearTerminal();
+    clearTerminalOnly();
   });
   
   commands.set(encrypt('clear'), () => {
-    clearTerminal();
+    clearTerminalAndOutput(); // Este sí oculta todo
   });
   
   commands.set(encrypt('help'), () => {
-    typeMessage('Terminal activa. Busca los comandos ocultos...');
-    setTimeout(clearTerminal, 3000);
+    showCommandOutput('help', 'Terminal activa. Busca los comandos ocultos...');
   });
   
-  function clearTerminal() {
+  // SEPARÉ LAS FUNCIONES DE LIMPIAR
+  function clearTerminalOnly() {
+    // Solo limpia el input, NO oculta el output
     if(terminalText) {
       terminalText.textContent = '';
       currentInput = '';
@@ -144,28 +150,62 @@
     }
   }
   
-  function typeMessage(msg, speed = 50) {
-    if(isTyping || !terminalText) return;
+  function clearTerminalAndOutput() {
+    // Limpia todo Y oculta el output
+    clearTerminalOnly();
+    hideOutput();
+  }
+  
+  function showCommandOutput(command, output) {
+    console.log('🚀 === EJECUTANDO COMANDO ===');
+    console.log('Comando:', command);
+    console.log('Output:', output);
     
-    isTyping = true;
-    terminalText.textContent = '';
-    terminalText.style.color = 'var(--c-accent)';
-    currentInput = ''; // Limpiar input durante typing
-    
-    let i = 0;
-    function typeChar() {
-      if(i < msg.length) {
-        terminalText.textContent += msg.charAt(i);
-        i++;
-        setTimeout(typeChar, speed);
-      } else {
-        isTyping = false;
-        setTimeout(() => {
-          terminalText.style.color = '';
-        }, 100);
-      }
+    if(!executedCommand || !commandResult || !terminalOutput) {
+      console.error('❌ ERROR: Elementos del terminal no encontrados');
+      return;
     }
-    typeChar();
+    
+    // Mostrar comando ejecutado
+    executedCommand.textContent = command;
+    console.log('✅ Comando asignado:', command);
+    
+    // Limpiar resultado anterior
+    commandResult.textContent = '';
+    console.log('✅ Resultado limpiado');
+    
+    // EXPANDIR el terminal
+    terminalOutput.classList.add('show');
+    console.log('✅ Clase "show" añadida - terminal debe expandirse');
+    
+    // Delay para que se vea la expansión
+    setTimeout(() => {
+      console.log('⌨️ Empezando escritura...');
+      // Escribir resultado letra por letra
+      let i = 0;
+      function typeChar() {
+        if(i < output.length) {
+          commandResult.textContent += output.charAt(i);
+          i++;
+          setTimeout(typeChar, 30);
+        } else {
+          console.log('✅ Escritura completada - esperando 5 segundos');
+          // Ocultar después de 5 segundos
+          setTimeout(() => {
+            hideOutput();
+            console.log('🔄 Terminal ocultado después de 5 segundos');
+          }, 5000);
+        }
+      }
+      typeChar();
+    }, 500);
+  }
+  
+  function hideOutput() {
+    if(terminalOutput) {
+      console.log('🔄 Ocultando terminal');
+      terminalOutput.classList.remove('show');
+    }
   }
   
   function updateTerminalDisplay() {
@@ -176,6 +216,7 @@
   
   function executeCommand(cmd) {
     const normalizedCmd = cmd.toLowerCase().trim();
+    console.log('🎯 EJECUTANDO COMANDO:', normalizedCmd);
     
     // Buscar comando cifrado
     for(let [encryptedCmd, action] of commands) {
@@ -185,32 +226,60 @@
       }
     }
     
-    // Comandos públicos simples
+    // Comandos públicos - QUITADO clearTerminal() de aquí
     if(normalizedCmd === 'date') {
-      typeMessage(new Date().toLocaleString());
-      setTimeout(clearTerminal, 2000);
+      showCommandOutput('date', new Date().toLocaleString('es-ES', {
+        year: 'numeric',
+        month: '2-digit', 
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }));
+      clearTerminalOnly(); // Solo limpiar input
       return true;
     }
     
     if(normalizedCmd === 'whoami') {
-      typeMessage('loonbac');
-      setTimeout(clearTerminal, 2000);
+      showCommandOutput('whoami', 'loonbac');
+      clearTerminalOnly();
       return true;
     }
     
     if(normalizedCmd === 'pwd') {
-      typeMessage('/home/loonbac');
-      setTimeout(clearTerminal, 2000);
+      showCommandOutput('pwd', '/home/loonbac');
+      clearTerminalOnly();
       return true;
     }
     
     if(normalizedCmd === 'ls') {
-      typeMessage('index.html  vlsm.html  styles/  scripts/  img/');
-      setTimeout(clearTerminal, 2500);
+      showCommandOutput('ls', 'index.html  vlsm.html  styles/  scripts/  img/  ico.png');
+      clearTerminalOnly();
       return true;
     }
     
-    return false;
+    if(normalizedCmd === 'uname') {
+      showCommandOutput('uname', 'Linux drix 5.15.0-loonbac #1 SMP x86_64 GNU/Linux');
+      clearTerminalOnly();
+      return true;
+    }
+    
+    if(normalizedCmd === 'ps') {
+      showCommandOutput('ps', 'PID TTY    TIME CMD\n2021 pts/0  00:00:00 bash\n2045 pts/0  00:00:00 ps');
+      clearTerminalOnly();
+      return true;
+    }
+    
+    if(normalizedCmd === 'test') {
+      showCommandOutput('test', '¡El terminal funciona perfectamente!');
+      clearTerminalOnly();
+      return true;
+    }
+    
+    // Comando no encontrado
+    showCommandOutput(normalizedCmd, `bash: ${normalizedCmd}: command not found`);
+    clearTerminalOnly();
+    return true;
   }
   
   function triggerKonamiEffect() {
@@ -224,30 +293,23 @@
   
   // Event listeners para el terminal
   document.addEventListener('keydown', function(e) {
-    if(isTyping) return; // No permitir input mientras se escribe
+    if(isTyping) return;
     
-    // Enter - ejecutar comando
     if(e.key === 'Enter') {
       e.preventDefault();
       if(currentInput.trim()) {
         commandBuffer.push(currentInput);
         historyIndex = commandBuffer.length;
-        
-        if(!executeCommand(currentInput)) {
-          typeMessage(`bash: ${currentInput}: command not found`);
-          setTimeout(clearTerminal, 1500);
-        }
+        executeCommand(currentInput);
       }
       return;
     }
     
-    // Escape - limpiar
     if(e.key === 'Escape') {
-      clearTerminal();
+      clearTerminalAndOutput(); // Este sí oculta todo
       return;
     }
     
-    // Backspace
     if(e.key === 'Backspace') {
       e.preventDefault();
       currentInput = currentInput.slice(0, -1);
@@ -255,7 +317,6 @@
       return;
     }
     
-    // Flecha arriba/abajo - historial
     if(e.key === 'ArrowUp') {
       e.preventDefault();
       if(historyIndex > 0) {
@@ -279,23 +340,21 @@
       return;
     }
     
-    // Caracteres normales
     if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
-      if(currentInput.length < 50) { // Límite de caracteres
+      if(currentInput.length < 50) {
         currentInput += e.key;
         updateTerminalDisplay();
       }
     }
   });
   
-  // Click en la barra superior para activar el terminal
-  if(topBar) {
-    topBar.addEventListener('click', function(e) {
-      // Focus visual en la terminal
-      topBar.style.outline = '2px solid var(--c-accent)';
+  // Click en terminal para focus
+  if(terminalContainer) {
+    terminalContainer.addEventListener('click', function(e) {
+      terminalContainer.style.outline = '2px solid var(--c-accent)';
       setTimeout(() => {
-        topBar.style.outline = '';
+        terminalContainer.style.outline = '';
       }, 200);
     });
   }
@@ -314,8 +373,7 @@
     if(konamiSequence.length === konamiCode.length && 
        konamiSequence.every((key, i) => key === konamiCode[i])) {
       triggerKonamiEffect();
-      typeMessage('¡Código Konami activado!');
-      setTimeout(clearTerminal, 2000);
+      showCommandOutput('konami', '¡Código Konami activado!');
       konamiSequence = [];
     }
   });
