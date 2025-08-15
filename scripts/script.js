@@ -17,157 +17,308 @@
     try{localStorage.setItem('retro-theme',t);}catch(e){}
   }
 
+  // GLOBO DE TEXTO - VERSIÓN ARREGLADA SIN SALTOS
   const avatarFrame = document.getElementById('avatarFrame');
   const speechBubble = document.getElementById('speechBubble');
   
-  const messages = ['¡Holaa!', '¡Im NOT OLD!', 'Bienvenido :D', 'Me gusta el Pollo a la Brasa', '¡Ressy tiene funciones ocultas!', 'EY EY EY', 'Soy Minecraft Player'];
-  let isShowing = false;
+  const messages = ['¡Hola!', '¡Hey!', '¿Qué tal?', 'Saludos', '¡Hi!', 'Eyyy', '¡Buenas!'];
+  let isShowing = false; // Prevenir clicks múltiples
   
   function showBubble(){
     if(!speechBubble || !avatarFrame || isShowing) return;
     
     isShowing = true;
     
+    // Calcular posición ANTES de mostrar
     const rect = avatarFrame.getBoundingClientRect();
     const avatarCenterX = rect.left + rect.width / 2;
     const avatarBottom = rect.bottom;
     
+    // Mensaje aleatorio
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     speechBubble.querySelector('.bubble-content').textContent = randomMessage;
     
+    // PRIMERO: Posicionar el globo (mientras está invisible)
     speechBubble.style.left = avatarCenterX + 'px';
     speechBubble.style.top = (avatarBottom + 20) + 'px';
     
+    // LUEGO: Usar requestAnimationFrame para asegurar que la posición se aplique
     requestAnimationFrame(() => {
+      // DESPUÉS: Mostrar con animación
       speechBubble.classList.add('show');
     });
     
+    console.log('Globo mostrado:', randomMessage, 'en posición fija:', avatarCenterX, avatarBottom + 20);
+    
+    // Ocultar después de 3 segundos
     setTimeout(() => {
       speechBubble.classList.remove('show');
       isShowing = false;
-    }, 1500);
+      console.log('Globo ocultado');
+    }, 3000);
   }
   
+  // Event listener con debounce simple
   if(avatarFrame){
     avatarFrame.addEventListener('click', function(e){
       e.preventDefault();
+      console.log('Click en avatar detectado');
       showBubble();
     });
   }
 
-  // ==================== CONSOLA FUNCIONAL ====================
-  const topBar = document.getElementById('topBar');
-  const consoleInput = document.getElementById('consoleInput');
-  const promptSpan = document.getElementById('promptSpan');
-  const blipCursor = document.getElementById('blipCursor');
+  // ==================== TERMINAL SIMPLIFICADO SIN SOLAPAMIENTO ====================
+  const terminalText = document.getElementById('terminalText');
+  const topBar = document.querySelector('.top-bar');
   
-  // Base64 encoded commands para ofuscar
-  const hiddenCommands = {
-    // "get files" -> btoa("get files") = "Z2V0IGZpbGVz"
-    'Z2V0IGZpbGVz': 'https://github.com/loonbac/site/tree/main',
-    // "admin panel" -> btoa("admin panel") = "YWRtaW4gcGFuZWw="
-    'YWRtaW4gcGFuZWw': 'https://cybersen.online/admin',
-    // "secret" -> btoa("secret") = "c2VjcmV0"
-    'c2VjcmV0': 'https://github.com/loonbac',
-    // "source" -> btoa("source") = "c291cmNl"
-    'c291cmNl': 'https://github.com/loonbac/site',
-    // "twitch" -> btoa("twitch") = "dHdpdGNo"
-    'dHdpdGNo': 'https://twitch.tv/loonbac21',
-    // "discord" -> btoa("discord") = "ZGlzY29yZA=="
-    'ZGlzY29yZA==': 'https://discord.gg/cybersen'
-  };
-
-  let consoleActive = false;
-
-  function activateConsole() {
-    if (consoleActive) return;
-    consoleActive = true;
-    topBar.classList.add('console-mode');
-    consoleInput.classList.add('active');
-    consoleInput.focus();
-    promptSpan.style.opacity = '0.7';
+  let currentInput = '';
+  let isTyping = false;
+  let commandBuffer = [];
+  let historyIndex = -1;
+  
+  // Sistema de comandos cifrado
+  const commands = new Map();
+  
+  // Función para cifrar comandos (ROT13 + Base64)
+  function encrypt(str) {
+    return btoa(str.replace(/[a-zA-Z]/g, function(c) {
+      return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+    }));
   }
-
-  function deactivateConsole() {
-    consoleActive = false;
-    topBar.classList.remove('console-mode');
-    consoleInput.classList.remove('active');
-    consoleInput.value = '';
-    consoleInput.blur();
-    promptSpan.style.opacity = '1';
-  }
-
-  function processCommand(cmd) {
-    const trimmed = cmd.trim().toLowerCase();
-    if (!trimmed) return;
-
-    // Encode command to base64 for lookup
-    const encoded = btoa(trimmed);
-    
-    if (hiddenCommands[encoded]) {
-      // Show loading animation
-      topBar.classList.add('console-loading');
-      
-      setTimeout(() => {
-        window.open(hiddenCommands[encoded], '_blank');
-        deactivateConsole();
-        topBar.classList.remove('console-loading');
-      }, 800);
-    } else {
-      // Invalid command - shake animation
-      topBar.style.animation = 'shake 0.5s ease-in-out';
-      setTimeout(() => {
-        topBar.style.animation = '';
-        deactivateConsole();
-      }, 500);
+  
+  // Función para descifrar comandos
+  function decrypt(str) {
+    try {
+      const decoded = atob(str);
+      return decoded.replace(/[a-zA-Z]/g, function(c) {
+        return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+      });
+    } catch(e) {
+      return '';
     }
   }
-
-  // Event listeners
-  if (topBar && consoleInput) {
-    topBar.addEventListener('click', (e) => {
-      if (e.target === consoleInput) return;
-      activateConsole();
-    });
-
-    consoleInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        processCommand(consoleInput.value);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        deactivateConsole();
+  
+  // Comandos secretos cifrados
+  commands.set(encrypt('get files'), () => {
+    window.open('https://github.com/loonbac', '_blank');
+    clearTerminal();
+  });
+  
+  commands.set(encrypt('admin'), () => {
+    window.open('vlsm.html', '_self');
+    clearTerminal();
+  });
+  
+  commands.set(encrypt('secret'), () => {
+    window.open('https://cybersen.online/secret', '_blank');
+    clearTerminal();
+  });
+  
+  commands.set(encrypt('matrix'), () => {
+    document.body.style.animation = 'matrix-rain 2s ease-in-out';
+    setTimeout(() => {
+      document.body.style.animation = '';
+      clearTerminal();
+    }, 2000);
+  });
+  
+  commands.set(encrypt('konami'), () => {
+    triggerKonamiEffect();
+    clearTerminal();
+  });
+  
+  commands.set(encrypt('clear'), () => {
+    clearTerminal();
+  });
+  
+  commands.set(encrypt('help'), () => {
+    typeMessage('Terminal activa. Busca los comandos ocultos...');
+    setTimeout(clearTerminal, 3000);
+  });
+  
+  function clearTerminal() {
+    if(terminalText) {
+      terminalText.textContent = '';
+      currentInput = '';
+      isTyping = false;
+    }
+  }
+  
+  function typeMessage(msg, speed = 50) {
+    if(isTyping || !terminalText) return;
+    
+    isTyping = true;
+    terminalText.textContent = '';
+    terminalText.style.color = 'var(--c-accent)';
+    currentInput = ''; // Limpiar input durante typing
+    
+    let i = 0;
+    function typeChar() {
+      if(i < msg.length) {
+        terminalText.textContent += msg.charAt(i);
+        i++;
+        setTimeout(typeChar, speed);
+      } else {
+        isTyping = false;
+        setTimeout(() => {
+          terminalText.style.color = '';
+        }, 100);
       }
-    });
-
-    consoleInput.addEventListener('blur', (e) => {
-      // Small delay to allow click events to process
-      setTimeout(() => {
-        if (document.activeElement !== consoleInput) {
-          deactivateConsole();
+    }
+    typeChar();
+  }
+  
+  function updateTerminalDisplay() {
+    if(terminalText && !isTyping) {
+      terminalText.textContent = currentInput;
+    }
+  }
+  
+  function executeCommand(cmd) {
+    const normalizedCmd = cmd.toLowerCase().trim();
+    
+    // Buscar comando cifrado
+    for(let [encryptedCmd, action] of commands) {
+      if(decrypt(encryptedCmd) === normalizedCmd) {
+        action();
+        return true;
+      }
+    }
+    
+    // Comandos públicos simples
+    if(normalizedCmd === 'date') {
+      typeMessage(new Date().toLocaleString());
+      setTimeout(clearTerminal, 2000);
+      return true;
+    }
+    
+    if(normalizedCmd === 'whoami') {
+      typeMessage('loonbac');
+      setTimeout(clearTerminal, 2000);
+      return true;
+    }
+    
+    if(normalizedCmd === 'pwd') {
+      typeMessage('/home/loonbac');
+      setTimeout(clearTerminal, 2000);
+      return true;
+    }
+    
+    if(normalizedCmd === 'ls') {
+      typeMessage('index.html  vlsm.html  styles/  scripts/  img/');
+      setTimeout(clearTerminal, 2500);
+      return true;
+    }
+    
+    return false;
+  }
+  
+  function triggerKonamiEffect() {
+    document.body.style.transform = 'rotate(360deg)';
+    document.body.style.transition = 'transform 1s ease-in-out';
+    setTimeout(() => {
+      document.body.style.transform = '';
+      document.body.style.transition = '';
+    }, 1000);
+  }
+  
+  // Event listeners para el terminal
+  document.addEventListener('keydown', function(e) {
+    if(isTyping) return; // No permitir input mientras se escribe
+    
+    // Enter - ejecutar comando
+    if(e.key === 'Enter') {
+      e.preventDefault();
+      if(currentInput.trim()) {
+        commandBuffer.push(currentInput);
+        historyIndex = commandBuffer.length;
+        
+        if(!executeCommand(currentInput)) {
+          typeMessage(`bash: ${currentInput}: command not found`);
+          setTimeout(clearTerminal, 1500);
         }
-      }, 100);
-    });
-
-    // Prevent default click behavior on console input
-    consoleInput.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-  }
-
-  // Add shake animation to CSS if not exists
-  if (!document.querySelector('#shake-style')) {
-    const shakeStyle = document.createElement('style');
-    shakeStyle.id = 'shake-style';
-    shakeStyle.textContent = `
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
       }
-    `;
-    document.head.appendChild(shakeStyle);
+      return;
+    }
+    
+    // Escape - limpiar
+    if(e.key === 'Escape') {
+      clearTerminal();
+      return;
+    }
+    
+    // Backspace
+    if(e.key === 'Backspace') {
+      e.preventDefault();
+      currentInput = currentInput.slice(0, -1);
+      updateTerminalDisplay();
+      return;
+    }
+    
+    // Flecha arriba/abajo - historial
+    if(e.key === 'ArrowUp') {
+      e.preventDefault();
+      if(historyIndex > 0) {
+        historyIndex--;
+        currentInput = commandBuffer[historyIndex] || '';
+        updateTerminalDisplay();
+      }
+      return;
+    }
+    
+    if(e.key === 'ArrowDown') {
+      e.preventDefault();
+      if(historyIndex < commandBuffer.length - 1) {
+        historyIndex++;
+        currentInput = commandBuffer[historyIndex] || '';
+      } else {
+        historyIndex = commandBuffer.length;
+        currentInput = '';
+      }
+      updateTerminalDisplay();
+      return;
+    }
+    
+    // Caracteres normales
+    if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      if(currentInput.length < 50) { // Límite de caracteres
+        currentInput += e.key;
+        updateTerminalDisplay();
+      }
+    }
+  });
+  
+  // Click en la barra superior para activar el terminal
+  if(topBar) {
+    topBar.addEventListener('click', function(e) {
+      // Focus visual en la terminal
+      topBar.style.outline = '2px solid var(--c-accent)';
+      setTimeout(() => {
+        topBar.style.outline = '';
+      }, 200);
+    });
   }
+
+  // Secuencia Konami
+  let konamiSequence = [];
+  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+  
+  document.addEventListener('keydown', function(e) {
+    konamiSequence.push(e.code);
+    
+    if(konamiSequence.length > konamiCode.length) {
+      konamiSequence.shift();
+    }
+    
+    if(konamiSequence.length === konamiCode.length && 
+       konamiSequence.every((key, i) => key === konamiCode[i])) {
+      triggerKonamiEffect();
+      typeMessage('¡Código Konami activado!');
+      setTimeout(clearTerminal, 2000);
+      konamiSequence = [];
+    }
+  });
 
   const saved = localStorage.getItem('retro-theme');
   setTheme(saved || 'dark');
