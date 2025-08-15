@@ -7,19 +7,19 @@
 <meta name="description" content="LoonBac21 - Conóceme más (streamer, ciberseguridad, Python y videojuegos).">
 
 <!-- FAVICON -->
-<link rel="icon" type="image/png" href="img/ico.png">
-<link rel="shortcut icon" type="image/png" href="img/ico.png">
-  
+<link rel="icon" type="image/png" href="ico.png">
+<link rel="shortcut icon" type="image/png" href="ico.png">
+
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" as="style">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-<header class="top-bar" id="topBar">
+<header class="top-bar">
   <div class="bar-inner">
-    <span class="prompt" id="promptSpan">loonbac21@drix:~$</span>
-    <input type="text" class="console-input" id="consoleInput" autocomplete="off" spellcheck="false">
-    <span class="blip" aria-hidden="true" id="blipCursor"></span>
+    <span class="prompt">loonbac21@drix:~$</span>
+    <span class="terminal-text" id="terminalText"></span>
+    <span class="blip" aria-hidden="true"></span>
   </div>
 </header>
 
@@ -43,7 +43,7 @@
       </p>
       <div class="badges-row">
         <span class="badge">Twitch</span>
-        <span class="badge">CiberSecurity</span>
+        <span class="badge">CiberSec</span>
         <span class="badge">Python</span>
         <span class="badge">Gaming</span>
         <!-- NUEVO: badge ahora es enlace -->
@@ -63,108 +63,126 @@
   <section class="panel tabs only-tech" aria-labelledby="tech-title">
     <nav class="tab-bar" aria-label="Tech">
       <span class="tab active" data-tab="tech" id="tech-title">Tech</span>
+      <div class="slider" aria-hidden="true"></div>
     </nav>
-    <div class="tab-content tech-content" id="tech-content">
-      <div class="tech-grid">
-        <div class="tech-item">
-          <span class="tech-icon">PY</span>
-          <span class="tech-name">Python</span>
-        </div>
-        <div class="tech-item">
-          <span class="tech-icon">$</span>
-          <span class="tech-name">Shell</span>
-        </div>
-        <div class="tech-item">
-          <span class="tech-icon">⚿</span>
-          <span class="tech-name">CiberSecurity</span>
-        </div>
-        <div class="tech-item">
-          <span class="tech-icon">⟳</span>
-          <span class="tech-name">Automation</span>
-        </div>
-        <div class="tech-item">
-          <span class="tech-icon">◉</span>
-          <span class="tech-name">Live</span>
-        </div>
-        <div class="tech-item">
-          <a href="vlsm.html" class="tech-link">
-            <span class="tech-icon">🌐</span>
-            <span class="tech-name">VLSM</span>
-          </a>
-        </div>
+    <div class="tab-content">
+      <div class="tab-pane active" id="pane-tech">
+        <ul class="icon-line">
+          <li class="icon-box" title="Python">
+            <span class="scan-icon">PY</span><span class="label">Python</span>
+          </li>
+          <li class="icon-box" title="Shell">
+            <span class="scan-icon">$</span><span class="label">Shell</span>
+          </li>
+          <li class="icon-box" title="Ciberseguridad">
+            <span class="scan-icon">⚿</span><span class="label">Sec</span>
+          </li>
+          <li class="icon-box" title="Automatización">
+            <span class="scan-icon">⟳</span><span class="label">Auto</span>
+          </li>
+          <li class="icon-box" title="Streaming / Live">
+            <span class="scan-icon">◉</span><span class="label">Live</span>
+          </li>
+          <!-- NUEVO: VLSM como icon-box clickeable -->
+          <li class="icon-box icon-link" title="VLSM Subnet Calculator" onclick="window.location.href='vlsm.html'">
+            <span class="scan-icon">🌐</span><span class="label">VLSM</span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- PANEL PROJECTS -->
-  <section class="panel">
-    <h2 class="section-title">Proyectos</h2>
-    <div class="projects-grid">
-      <!-- Ressy Bot -->
-      <div class="project-card">
-        <div class="project-icon">🤖</div>
-        <div class="project-info">
-          <h3 class="project-title">Ressy Bot</h3>
-          <p class="project-desc mono">Bot de Discord con muchas funciones desarrollado en Python. Incluye música, moderación y más.</p>
-          <div class="project-footer">
-            <span class="project-tech">Python • Discord.py</span>
-            <a href="https://github.com/loonbac/ressy-bot" class="project-link" target="_blank" rel="noopener">Ver código ↗</a>
-          </div>
-        </div>
-      </div>
+  <!-- PANEL PROYECTOS -->
+  <section class="panel projects" id="proyectos" aria-labelledby="proyectos-title">
+    <h2 class="panel-heading" id="proyectos-title">Proyectos Recientes</h2>
 
-      <!-- Subnet Calculator -->
-      <div class="project-card">
-        <div class="project-icon">🔗</div>
-        <div class="project-info">
-          <h3 class="project-title">Subnet Calculator</h3>
-          <p class="project-desc mono">Calculadora de subredes con interfaz gráfica en Python usando tkinter.</p>
-          <div class="project-footer">
-            <span class="project-tech">Python • tkinter</span>
-            <a href="https://github.com/loonbac/subnet-calculator" class="project-link" target="_blank" rel="noopener">Ver código ↗</a>
+    <div class="proj-grid">
+      <!-- TARJETA PROYECTO -->
+      <article class="proj-card">
+        <figure class="proj-media">
+          <img src="img/ressy.jpg" alt="Ressy Bot - Bot de Discord en Python" loading="lazy">
+        </figure>
+        <div class="proj-body">
+          <h3 class="proj-name">Ressy Bot</h3>
+          <p class="proj-desc mono small">
+            Bot de Discord hecho en Python: comandos básicos, eventos y modularidad simple.
+          </p>
+          <div class="proj-actions">
+            <a class="btn slim" target="_blank" rel="noopener" href="https://github.com/loonbac/Ressy-Bot-Py">Visitar ↗</a>
           </div>
         </div>
-      </div>
+      </article>
 
-      <!-- Timer App -->
-      <div class="project-card">
-        <div class="project-icon">⏱️</div>
-        <div class="project-info">
-          <h3 class="project-title">Temporizador Flotante</h3>
-          <p class="project-desc mono">App Android para temporizadores flotantes en pantalla. Ideal para streaming.</p>
-          <div class="project-footer">
-            <span class="project-tech">Android • Java</span>
-            <a href="https://github.com/loonbac/floating-timer/releases/download/v1.0/timer-app.apk" class="project-link" download>Descargar APK ↓</a>
+      <article class="proj-card">
+        <figure class="proj-media">
+          <img src="img/subnet.png" alt="Subnet Calculator - GUI en Python" loading="lazy">
+        </figure>
+        <div class="proj-body">
+          <h3 class="proj-name">Subnet Calculator</h3>
+          <p class="proj-desc mono small">
+            GUI en Python (tkinter + ipaddress) para calcular subredes y rangos rápidamente.
+          </p>
+          <div class="proj-actions">
+            <a class="btn slim" target="_blank" rel="noopener" href="https://github.com/loonbac/Subnet-Calculator">Código ↗</a>
           </div>
         </div>
-      </div>
+      </article>
 
-      <!-- Boolean Logic -->
-      <div class="project-card">
-        <div class="project-icon">🔢</div>
-        <div class="project-info">
-          <h3 class="project-title">Lógica Booleana</h3>
-          <p class="project-desc mono">Generador de tablas de verdad y simplificación de expresiones booleanas en Python.</p>
-          <div class="project-footer">
-            <span class="project-tech">Python • Logic</span>
-            <a href="https://github.com/loonbac/boolean-logic" class="project-link" target="_blank" rel="noopener">Ver código ↗</a>
+      <article class="proj-card">
+        <figure class="proj-media">
+          <img src="img/timer.png" alt="Temporizador Flotante - App Android" loading="lazy">
+        </figure>
+        <div class="proj-body">
+          <h3 class="proj-name">Temporizador Flotante</h3>
+          <p class="proj-desc mono small">
+            Primera app Android; configura tiempos desde un servidor web local incluido en la app.
+          </p>
+          <div class="proj-actions">
+            <a class="btn slim" href="descargas/temporizador.apk" download>Descargar ⬇</a>
           </div>
         </div>
       </div>
-    </div>
+      </article>
+
+      <article class="proj-card">
+        <figure class="proj-media">
+          <img src="img/bool.png" alt="Lógica Booleana en Python" loading="lazy">
+        </figure>
+        <div class="proj-body">
+          <h3 class="proj-name">Lógica Booleana en Python</h3>
+          <p class="proj-desc mono small">
+            Funciones que implementan y muestran tablas de verdad para NOT, AND y OR.
+          </p>
+          <div class="proj-actions">
+            <a class="btn slim" target="_blank" rel="noopener" href="https://github.com/loonbac/Truth-Table-Logic">Código ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- PLANTILLA NUEVO PROYECTO
+      <article class="proj-card">
+        <figure class="proj-media">
+          <img src="img/IMAGEN_NUEVO.jpg" alt="Nombre descriptivo del nuevo proyecto" loading="lazy">
+        </figure>
+        <div class="proj-body">
+          <h3 class="proj-name">Nombre Proyecto</h3>
+          <p class="proj-desc mono small">
+            Breve descripción (una o dos frases). Ajusta a tu gusto.
+          </p>
+          <div class="proj-actions">
+            <a class="btn slim" target="_blank" rel="noopener" href="URL_O_ARCHIVO">Visitar ↗</a>
+          </div>
+        </div>
+      </article>
+      -->
+    </div><!-- /proj-grid -->
   </section>
-
-  <!-- PANEL FOOTER -->
-  <footer class="panel footer">
-    <p class="mono">© <span id="year">2024</span> LoonBac21. Hecho con ❤️ y mucho café.</p>
-    <div class="footer-links">
-      <a href="https://github.com/loonbac" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://twitch.tv/loonbac21" target="_blank" rel="noopener">Twitch</a>
-      <a href="https://cybersen.online/" target="_blank" rel="noopener">CiberSen</a>
-    </div>
-  </footer>
 </main>
 
-<script src="scripts/script.js"></script>
+<footer class="foot">
+  <p class="mono tiny">&copy; <span id="year"></span> LoonBac21 · Demo GitHub Pages.</p>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
