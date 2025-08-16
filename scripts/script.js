@@ -68,19 +68,6 @@
   let commandBuffer = [];
   let historyIndex = -1;
   
-  // Test visual inicial
-  setTimeout(() => {
-    if(terminalOutput) {
-      terminalOutput.classList.add('show');
-      if(executedCommand) executedCommand.textContent = 'TEST';
-      if(commandResult) commandResult.textContent = 'Terminal funcionando correctamente';
-      
-      setTimeout(() => {
-        terminalOutput.classList.remove('show');
-      }, 3000);
-    }
-  }, 1000);
-  
   // Sistema de comandos cifrado
   const commands = new Map();
   
