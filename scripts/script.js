@@ -17,11 +17,10 @@
     try{localStorage.setItem('retro-theme',t);}catch(e){}
   }
 
-  // GLOBO DE TEXTO
   const avatarFrame = document.getElementById('avatarFrame');
   const speechBubble = document.getElementById('speechBubble');
   
-  const messages = ['¡Hola!', '¡Hey!', '¿Qué tal?', 'Saludos', '¡Hi!', 'Eyyy', '¡Buenas!'];
+  const messages = ['¡Hola!', '¡EY EY EY!', 'Ressy tiene funciones ocultas', 'Im NOT old', 'Undertale/Deltarune Fan', 'Minecraft Player', '¡Bienvenido!'];
   let isShowing = false;
   
   function showBubble(){
@@ -56,7 +55,6 @@
     });
   }
 
-  // ==================== TERMINAL ARREGLADO - SIN CLEARTERM ANTICIPADO ==================== 
   const terminalText = document.getElementById('terminalText');
   const terminalOutput = document.getElementById('terminalOutput');
   const executedCommand = document.getElementById('executedCommand');
@@ -68,7 +66,6 @@
   let commandBuffer = [];
   let historyIndex = -1;
   
-  // Sistema de comandos cifrado
   const commands = new Map();
   
   function encrypt(str) {
@@ -88,46 +85,18 @@
     }
   }
   
-  // Comandos secretos cifrados
-  commands.set(encrypt('get files'), () => {
-    window.open('https://github.com/loonbac', '_blank');
-    clearTerminalOnly(); // Solo limpiar input, no ocultar output
-  });
-  
-  commands.set(encrypt('admin'), () => {
-    window.open('vlsm.html', '_self');
+  commands.set(encrypt('cybersen'), () => {
+    window.open('https://cybersen.online/', '_blank');
     clearTerminalOnly();
   });
   
-  commands.set(encrypt('secret'), () => {
-    window.open('https://cybersen.online/secret', '_blank');
-    clearTerminalOnly();
-  });
-  
-  commands.set(encrypt('matrix'), () => {
-    document.body.style.animation = 'matrix-rain 2s ease-in-out';
-    setTimeout(() => {
-      document.body.style.animation = '';
-      clearTerminalOnly();
-    }, 2000);
-  });
   
   commands.set(encrypt('konami'), () => {
     triggerKonamiEffect();
     clearTerminalOnly();
   });
   
-  commands.set(encrypt('clear'), () => {
-    clearTerminalAndOutput(); // Este sí oculta todo
-  });
-  
-  commands.set(encrypt('help'), () => {
-    showCommandOutput('help', 'Terminal activa. Busca los comandos ocultos...');
-  });
-  
-  // SEPARÉ LAS FUNCIONES DE LIMPIAR
   function clearTerminalOnly() {
-    // Solo limpia el input, NO oculta el output
     if(terminalText) {
       terminalText.textContent = '';
       currentInput = '';
@@ -136,7 +105,6 @@
   }
   
   function clearTerminalAndOutput() {
-    // Limpia todo Y oculta el output
     clearTerminalOnly();
     hideOutput();
   }
@@ -147,18 +115,13 @@
       return;
     }
     
-    // Mostrar comando ejecutado
     executedCommand.textContent = command;
     
-    // Limpiar resultado anterior
     commandResult.textContent = '';
     
-    // EXPANDIR el terminal
     terminalOutput.classList.add('show');
     
-    // Delay para que se vea la expansión
     setTimeout(() => {
-      // Escribir resultado letra por letra
       let i = 0;
       function typeChar() {
         if(i < output.length) {
@@ -166,7 +129,6 @@
           i++;
           setTimeout(typeChar, 30);
         } else {
-          // Ocultar después de 5 segundos
           setTimeout(() => {
             hideOutput();
           }, 5000);
@@ -191,7 +153,6 @@
   function executeCommand(cmd) {
     const normalizedCmd = cmd.toLowerCase().trim();
     
-    // Buscar comando cifrado
     for(let [encryptedCmd, action] of commands) {
       if(decrypt(encryptedCmd) === normalizedCmd) {
         action();
@@ -199,7 +160,6 @@
       }
     }
     
-    // Comandos públicos - QUITADO clearTerminal() de aquí
     if(normalizedCmd === 'date') {
       showCommandOutput('date', new Date().toLocaleString('es-ES', {
         year: 'numeric',
@@ -209,12 +169,12 @@
         minute: '2-digit',
         second: '2-digit'
       }));
-      clearTerminalOnly(); // Solo limpiar input
+      clearTerminalOnly();
       return true;
     }
     
     if(normalizedCmd === 'whoami') {
-      showCommandOutput('whoami', 'loonbac');
+      showCommandOutput('whoami', 'loonbac21');
       clearTerminalOnly();
       return true;
     }
@@ -226,13 +186,7 @@
     }
     
     if(normalizedCmd === 'ls') {
-      showCommandOutput('ls', 'index.html  vlsm.html  styles/  scripts/  img/  ico.png');
-      clearTerminalOnly();
-      return true;
-    }
-    
-    if(normalizedCmd === 'uname') {
-      showCommandOutput('uname', 'Linux drix 5.15.0-loonbac #1 SMP x86_64 GNU/Linux');
+      showCommandOutput('ls', 'index.html  vlsm.html  styles/  scripts/  img/');
       clearTerminalOnly();
       return true;
     }
@@ -243,13 +197,6 @@
       return true;
     }
     
-    if(normalizedCmd === 'test') {
-      showCommandOutput('test', '¡El terminal funciona perfectamente!');
-      clearTerminalOnly();
-      return true;
-    }
-    
-    // Comando no encontrado
     showCommandOutput(normalizedCmd, `bash: ${normalizedCmd}: command not found`);
     clearTerminalOnly();
     return true;
@@ -264,7 +211,6 @@
     }, 1000);
   }
   
-  // Event listeners para el terminal
   document.addEventListener('keydown', function(e) {
     if(isTyping) return;
     
@@ -279,7 +225,7 @@
     }
     
     if(e.key === 'Escape') {
-      clearTerminalAndOutput(); // Este sí oculta todo
+      clearTerminalAndOutput();
       return;
     }
     
@@ -322,7 +268,6 @@
     }
   });
   
-  // Click en terminal para focus
   if(terminalContainer) {
     terminalContainer.addEventListener('click', function(e) {
       terminalContainer.style.outline = '2px solid var(--c-accent)';
@@ -332,7 +277,7 @@
     });
   }
 
-  // Secuencia Konami
+
   let konamiSequence = [];
   const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
   
