@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LoonBac21 :: Logic Gates Simulator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Simulador de Compuertas Lógicas - Herramienta interactiva para aprender lógica digital.">
+
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="img/ico.png">
+<link rel="shortcut icon" type="image/png" href="img/ico.png">
+
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" as="style">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="styles/styles.css">
+<link rel="stylesheet" href="styles/logic-gates.css">
+</head>
+<body>
+<header class="top-bar">
+  <div class="bar-inner">
+    <span class="prompt">loonbac21@drix:~$ logic-gates-simulator</span>
+    <span class="blip" aria-hidden="true"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- PANEL HEADER -->
+  <section class="panel">
+    <div class="simulator-header">
+      <div class="header-content">
+        <div class="title-row">
+          <h1 class="simulator-title">
+            <span class="accent">🧿 Simulador de Compuertas Logicas</span>
+          </h1>
+        </div>
+        <div class="credits-badge">
+          <span class="credits-text">Traducido de Python a Js:</span>
+          <a class="credits-link" href="https://github.com/loonbac" target="_blank" rel="noopener noreferrer">
+            <span class="github-icon">⚡</span>
+            LoonBac21
+            <span class="external-icon">↗</span>
+          </a>
+        </div>
+      </div>
+      <div class="header-buttons">
+        <button class="btn ghost" id="flipTheme" type="button">Tema <span class="theme-name">Dark</span></button>
+        <a class="btn slim" href="index.html">← Volver</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL SIMULATOR -->
+  <section class="panel simulator-container">
+    <div class="simulator-layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <h3 class="sidebar-title">Compuertas</h3>
+        
+        <div class="gate-buttons">
+          <button class="gate-btn" data-gate="INPUT">
+            <span class="gate-icon">📥</span>
+            <span class="gate-name">INPUT</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="AND">
+            <span class="gate-icon">∧</span>
+            <span class="gate-name">AND</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="OR">
+            <span class="gate-icon">∨</span>
+            <span class="gate-name">OR</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="NOT">
+            <span class="gate-icon">¬</span>
+            <span class="gate-name">NOT</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="NAND">
+            <span class="gate-icon">⊼</span>
+            <span class="gate-name">NAND</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="NOR">
+            <span class="gate-icon">⊽</span>
+            <span class="gate-name">NOR</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="XOR">
+            <span class="gate-icon">⊕</span>
+            <span class="gate-name">XOR</span>
+          </button>
+          
+          <button class="gate-btn" data-gate="XNOR">
+            <span class="gate-icon">⊙</span>
+            <span class="gate-name">XNOR</span>
+          </button>
+        </div>
+        
+        <div class="controls">
+          <button class="btn ghost control-btn" id="resetBtn">
+            <span class="btn-icon">🗑️</span>
+            RESET
+          </button>
+        </div>
+        
+        <div class="instructions">
+          <h4 class="instructions-title">Instrucciones:</h4>
+          <ul class="instructions-list">
+            <li>Clic en botones para añadir compuertas</li>
+            <li>Arrastra compuertas para mover</li>
+            <li>Clic en pin fuente, luego en destino</li>
+            <li>Clic derecho en INPUT: cambiar valor</li>
+            <li>Clic derecho en compuertas: añadir pin</li>
+            <li>Clic derecho en cables/pines: desconectar</li>
+            <li>DEL: eliminar seleccionado</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- CANVAS -->
+      <div class="canvas-container">
+        <svg id="logicCanvas" class="logic-canvas" viewBox="0 0 1000 600">
+          <!-- Grid pattern -->
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--c-line)" stroke-width="1" opacity="0.3"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          
+          <!-- Connections layer -->
+          <g id="connectionsLayer"></g>
+          
+          <!-- Gates layer -->
+          <g id="gatesLayer"></g>
+          
+          <!-- Temporary connection line -->
+          <line id="tempConnection" x1="0" y1="0" x2="0" y2="0" 
+                stroke="var(--c-accent)" stroke-width="2" opacity="0" stroke-dasharray="5,5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL TRUTH TABLE -->
+  <section class="panel">
+    <h2 class="panel-heading">Tabla de Verdad</h2>
+    <div id="truthTable" class="truth-table-container">
+      <p class="mono truth-table-hint">Conecta compuertas INPUT a otras compuertas para generar la tabla de verdad</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="mono tiny">&copy; 2025 LoonBac21 · Logic Gates Simulator</p>
+</footer>
+
+<script src="scripts/logic-gates.js"></script>
+</body>
+</html>
