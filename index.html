@@ -177,6 +177,31 @@
   </section>
 </main>
 
+<!-- VENTANA FLOTANTE DE MÚSICA -->
+<div class="floating-window hidden" id="musicWindow">
+  <div class="window-header">
+    <div class="window-controls">
+      <button class="window-btn minimize" id="minimizeBtn" title="Minimizar">−</button>
+      <button class="window-btn close" id="closeBtn" title="Cerrar">×</button>
+    </div>
+    <div class="window-title">
+      <span class="window-icon">🎵</span>
+      Apple Music • Favorite Songs
+    </div>
+    <div class="resize-handle" id="resizeHandle"></div>
+  </div>
+  
+  <div class="window-content">
+    <iframe 
+      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
+      frameborder="0" 
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
+      src="https://embed.music.apple.com/pe/playlist/favorite-songs/pl.u-DpU0Kg87NX"
+      title="LoonBac21 - Favorite Songs Playlist">
+    </iframe>
+  </div>
+</div>
+
 <footer class="foot">
   <p class="mono tiny">&copy; <span id="year"></span> LoonBac21 · Demo GitHub Pages.</p>
 </footer>
