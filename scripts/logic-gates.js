@@ -220,10 +220,8 @@ class LogicGatesSimulator {
     addGate(gateType, x, y) {
         const gate = new Gate(x, y, gateType);
         this.gates.push(gate);
-        console.log('Adding gate:', gateType, 'at', x, y); // Debug
         this.renderGate(gate);
         // NO llamar updateTruthTable aquí para evitar bucles
-        console.log('Gate added successfully, total gates:', this.gates.length); // Debug
         return gate;
     }
     
@@ -249,19 +247,16 @@ class LogicGatesSimulator {
     // ==================== GESTIÓN DE CONEXIONES ====================
     addConnection(outputPin, inputPin) {
         if (outputPin.isInput && !outputPin.connectedFrom) {
-            console.log('Failed: Input pin without connection cannot be source'); // Debug
             return false; // Pin de entrada sin valor no puede ser fuente
         }
         
         if (!inputPin.isInput) {
-            console.log('Failed: Cannot connect to output pin'); // Debug
             return false; // No se puede conectar a pin de salida
         }
         
         // Verificar si ya existe la conexión
         if (this.connections.some(conn => 
             conn.outputPin === outputPin && conn.inputPin === inputPin)) {
-            console.log('Failed: Connection already exists'); // Debug
             return false;
         }
         
@@ -269,7 +264,6 @@ class LogicGatesSimulator {
         if (inputPin.connectedFrom) {
             const oldConn = this.connections.find(conn => conn.inputPin === inputPin);
             if (oldConn) {
-                console.log('Removing old connection'); // Debug
                 this.removeConnection(oldConn);
             }
         }
@@ -279,7 +273,6 @@ class LogicGatesSimulator {
         this.connections.push(connection);
         inputPin.connectedFrom = outputPin;
         
-        console.log('Connection created successfully from', outputPin.isInput ? 'input' : 'output', 'to input');
         this.renderConnection(connection);
         
         // Actualizar el valor del pin de entrada inmediatamente
@@ -299,7 +292,6 @@ class LogicGatesSimulator {
     }
     
     removeConnection(connection) {
-        console.log('Removing connection:', connection.id);
         
         // Limpiar referencias
         connection.inputPin.connectedFrom = null;
@@ -326,14 +318,12 @@ class LogicGatesSimulator {
         }
         
         this.updateTruthTable();
-        console.log('Connection removed successfully');
     }
     
     // ==================== EVENTOS DE MOUSE ====================
     handleMouseDown(event) {
         // Si el evento viene de un pin, no procesarlo aquí
         if (event.target && event.target.classList.contains('logic-pin')) {
-            console.log('Mouse down on pin - ignoring canvas handler');
             return;
         }
         
@@ -344,14 +334,12 @@ class LogicGatesSimulator {
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
         
-        console.log('Mouse down at:', x, y);
         
         // Los pines se manejan con sus propios eventos, aquí solo manejamos compuertas y espacio vacío
         
         // Verificar click en compuerta
         const gate = this.getGateAtPosition(x, y);
         if (gate) {
-            console.log('Gate clicked:', gate.gateType);
             this.selectGate(gate);
             this.dragging = true;
             this.dragOffset = {
@@ -359,7 +347,6 @@ class LogicGatesSimulator {
                 y: y - gate.y
             };
         } else {
-            console.log('Empty space clicked');
             this.deselectAll();
             
             // Cancelar conexión si está en progreso
@@ -379,7 +366,6 @@ class LogicGatesSimulator {
         
         if (this.connectingFrom) {
             this.updateTempConnection(x, y);
-            console.log('Mouse move: cursor at', event.clientX - rect.left, event.clientY - rect.top, 'SVG coords:', x, y);
         }
         
         if (this.dragging && this.selectedGate) {
@@ -405,37 +391,28 @@ class LogicGatesSimulator {
         const scaleY = 600 / rect.height;
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
-        
-        console.log('=== CANVAS RIGHT CLICK ===');
-        console.log('Right click at:', x, y);
-        
+                
         const gate = this.getGateAtPosition(x, y);
         if (gate) {
-            console.log('Right clicked gate:', gate.gateType, 'ID:', gate.id, 'current value:', gate.value); // Debug
             
             if (gate.gateType === GateType.INPUT) {
-                console.log('Calling toggleInputValue from canvas handler'); // Debug
                 this.toggleInputValue(gate);
             } else if (gate.gateType !== GateType.NOT && gate.gateType !== GateType.INPUT) {
                 if (gate.inputPins.length < 8) {
-                    console.log('Adding input pin to:', gate.gateType); // Debug
                     gate.addInputPin();
                     this.updateGateElement(gate);
                 }
             }
         } else {
-            console.log('Right click on empty space'); // Debug
         }
     }
     
     handleKeyDown(event) {
         if (event.key === 'Delete' || event.key === 'Backspace') {
             if (this.selectedConnection) {
-                console.log('Deleting selected connection');
                 this.removeConnection(this.selectedConnection);
                 this.selectedConnection = null;
             } else if (this.selectedGate) {
-                console.log('Deleting selected gate');
                 this.removeGate(this.selectedGate);
                 this.selectedGate = null;
             }
@@ -447,25 +424,20 @@ class LogicGatesSimulator {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
-        
-        console.log('Pin clicked:', pin.isInput ? 'input' : 'output', 'ID:', pin.id);
-        
+                
         if (this.connectingFrom === null) {
             // Solo empezar conexión desde pines de salida
             if (!pin.isInput) {
                 this.connectingFrom = pin;
-                console.log('Starting connection from output pin:', pin.id);
                 
                 // Mostrar línea temporal
                 const pos = pin.getAbsolutePos();
                 this.updateTempConnection(pos.x, pos.y);
                 
-                console.log('Waiting for input pin click...');
             }
         } else {
             // Solo completar conexión en pines de entrada
             if (pin.isInput) {
-                console.log('Completing connection to input pin:', pin.id);
                 this.addConnection(this.connectingFrom, pin);
             }
             
@@ -477,30 +449,24 @@ class LogicGatesSimulator {
     
     // ==================== FUNCIONES AUXILIARES ====================
     toggleInputValue(gate) {
-        console.log('=== toggleInputValue START ===');
-        console.log('toggleInputValue called for gate:', gate.gateType, 'ID:', gate.id, 'current value:', gate.value);
         
         if (gate.gateType !== GateType.INPUT) {
-            console.log('Not an INPUT gate, returning');
             return;
         }
         
         // Verificar que la compuerta existe en el array
         const gateExists = this.gates.find(g => g.id === gate.id);
         if (!gateExists) {
-            console.log('Gate not found in gates array!');
             return;
         }
         
         // Cambiar valor directamente
         const oldValue = gate.value;
         gate.value = gate.value === 1 ? 0 : 1;
-        console.log('Changed INPUT value from', oldValue, 'to', gate.value);
         
         // Actualizar el pin de salida
         if (gate.outputPins && gate.outputPins.length > 0) {
             gate.outputPins[0].value = gate.value;
-            console.log('Updated output pin value to:', gate.outputPins[0].value);
         }
         
         // Actualizar SOLO el elemento visual de esta compuerta
@@ -509,9 +475,7 @@ class LogicGatesSimulator {
             const valueText = gateElement.querySelector('.gate-value');
             if (valueText) {
                 valueText.textContent = gate.value;
-                console.log('Updated value text in DOM to:', gate.value);
             } else {
-                console.log('Value text element not found!');
             }
             
             // Actualizar color del pin de salida usando data-pin-id
@@ -520,13 +484,10 @@ class LogicGatesSimulator {
                 if (outputPin) {
                     outputPin.classList.remove('high', 'low');
                     outputPin.classList.add(gate.value === 1 ? 'high' : 'low');
-                    console.log('Updated output pin color for value:', gate.value);
                 } else {
-                    console.log('Output pin element not found!');
                 }
             }
         } else {
-            console.log('Gate element not found in DOM!');
         }
         
         // Propagar cambios SOLO a través de conexiones directas
@@ -534,18 +495,14 @@ class LogicGatesSimulator {
             this.propagateSimple(gate.outputPins[0]);
         }
         
-        console.log('=== toggleInputValue COMPLETED ===');
     }
     
     propagateSimple(sourcePin) {
-        console.log('Simple propagation from pin with value:', sourcePin.value);
         
         // Encontrar conexiones que salen de este pin
         const connectionsFromPin = this.connections.filter(conn => conn.outputPin === sourcePin);
-        console.log('Found', connectionsFromPin.length, 'connections to update');
         
         for (const connection of connectionsFromPin) {
-            console.log('Updating connection:', connection.id, 'from value', connection.inputPin.value, 'to', sourcePin.value);
             
             // Actualizar valor del pin de entrada conectado
             connection.inputPin.value = sourcePin.value;
@@ -558,9 +515,7 @@ class LogicGatesSimulator {
             if (connectionElement) {
                 const color = sourcePin.value === 1 ? '#00ff00' : '#333333';
                 connectionElement.setAttribute('stroke', color);
-                console.log('Updated connection color to:', color);
             } else {
-                console.log('Connection element not found for:', connection.id);
             }
             
             // Actualizar visualización de los pines de la compuerta conectada
@@ -585,24 +540,19 @@ class LogicGatesSimulator {
             }
         }
         
-        console.log('Simple propagation completed');
     }
     
     propagateChanges(sourcePin) {
-        console.log('Propagating changes from pin with value:', sourcePin.value); // Debug
         
         // Encontrar todas las conexiones que salen de este pin
         const connectionsFromPin = this.connections.filter(conn => conn.outputPin === sourcePin);
-        console.log('Found', connectionsFromPin.length, 'connections from this pin'); // Debug
         
         for (const connection of connectionsFromPin) {
             // Actualizar el valor del pin de entrada
             connection.inputPin.value = sourcePin.value;
-            console.log('Updated connected input pin to value:', connection.inputPin.value); // Debug
             
             // Recalcular la salida de la compuerta conectada
             connection.inputPin.gate.calculateOutput();
-            console.log('Recalculated output for gate:', connection.inputPin.gate.gateType); // Debug
             
             // Actualizar visualización de la conexión
             const connectionElement = this.connectionsLayer.querySelector(`[data-connection-id="${connection.id}"]`);
@@ -634,7 +584,6 @@ class LogicGatesSimulator {
     
     getPinAtPosition(x, y) {
         // NOTA: Esta función ya no se usa - los pines usan eventos directos
-        console.log('getPinAtPosition called but not used - pins use direct events');
         return null;
     }
     
@@ -666,7 +615,6 @@ class LogicGatesSimulator {
     
     updateCircuit() {
         // Solo recalcular compuertas que no son INPUT (las INPUT mantienen su valor manual)
-        console.log('updateCircuit called');
         
         // Actualizar valores de entrada para compuertas no-INPUT
         for (const gate of this.gates) {
@@ -703,7 +651,6 @@ class LogicGatesSimulator {
     
     // ==================== RENDERIZADO SVG ====================
     renderGate(gate) {
-        console.log('Rendering gate:', gate.gateType, 'with ID:', gate.id); // Debug
         
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         group.classList.add('logic-gate');
@@ -722,14 +669,11 @@ class LogicGatesSimulator {
         const handleRightClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Right click on gate:', gate.gateType, 'ID:', gate.id, 'current value:', gate.value); // Debug
             
             if (gate.gateType === GateType.INPUT) {
-                console.log('Calling toggleInputValue for gate ID:', gate.id); // Debug
                 this.toggleInputValue(gate);
             } else if (gate.gateType !== GateType.NOT && gate.gateType !== GateType.INPUT) {
                 if (gate.inputPins.length < 8) {
-                    console.log('Adding input pin to:', gate.gateType); // Debug
                     gate.addInputPin();
                     this.updateGateElement(gate);
                 }
@@ -753,13 +697,11 @@ class LogicGatesSimulator {
         group.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Right click on gate group:', gate.gateType, 'current value:', gate.value); // Debug
             
             if (gate.gateType === GateType.INPUT) {
                 this.toggleInputValue(gate);
             } else if (gate.gateType !== GateType.NOT && gate.gateType !== GateType.INPUT) {
                 if (gate.inputPins.length < 8) {
-                    console.log('Adding input pin to:', gate.gateType); // Debug
                     gate.addInputPin();
                     this.updateGateElement(gate);
                 }
@@ -775,7 +717,6 @@ class LogicGatesSimulator {
             valueText.textContent = gate.value;
             valueText.style.pointerEvents = 'none';
             group.appendChild(valueText);
-            console.log('Created value text for INPUT gate:', gate.value); // Debug
         }
         
         // Contador de pines para compuertas de múltiples entradas
@@ -805,7 +746,6 @@ class LogicGatesSimulator {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
-                console.log('Pin clicked directly:', pin.isInput ? 'input' : 'output');
                 this.handlePinClick(pin, e);
             });
             
@@ -814,10 +754,8 @@ class LogicGatesSimulator {
                 circle.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Right click on input pin');
                     
                     if (pin.connectedFrom) {
-                        console.log('Disconnecting input pin');
                         const connection = this.connections.find(conn => conn.inputPin === pin);
                         if (connection) {
                             this.removeConnection(connection);
@@ -833,7 +771,6 @@ class LogicGatesSimulator {
         });
         
         this.gatesLayer.appendChild(group);
-        console.log('Gate rendered successfully:', gate.gateType, 'ID:', gate.id); // Debug
     }
     
     renderConnection(connection) {
@@ -858,7 +795,6 @@ class LogicGatesSimulator {
         line.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Right click on connection, disconnecting...');
             this.removeConnection(connection);
         });
         
@@ -866,7 +802,6 @@ class LogicGatesSimulator {
         line.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Connection selected for deletion');
             this.selectedConnection = connection;
             // Resaltar la conexión seleccionada
             line.setAttribute('stroke-width', '4');
@@ -874,7 +809,6 @@ class LogicGatesSimulator {
         });
         
         this.connectionsLayer.appendChild(line);
-        console.log('Connection rendered with color:', color, 'for value:', connection.outputPin.value);
     }
     
     updateGatePosition(gate) {
@@ -926,17 +860,14 @@ class LogicGatesSimulator {
     updateGateDisplay(gate) {
         const group = this.gatesLayer.querySelector(`[data-gate-id="${gate.id}"]`);
         if (!group) {
-            console.log('Gate group not found for display update'); // Debug
             return;
         }
         
-        console.log('Updating gate display for:', gate.gateType, 'value:', gate.value); // Debug
         
         // Actualizar texto de valor para INPUT gates
         if (gate.gateType === GateType.INPUT) {
             let valueText = group.querySelector('.gate-value');
             if (!valueText) {
-                console.log('Value text element not found, creating new one'); // Debug
                 // Crear elemento de texto si no existe
                 valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 valueText.classList.add('gate-value');
@@ -961,7 +892,6 @@ class LogicGatesSimulator {
             newValueText.style.pointerEvents = 'none';
             parent.appendChild(newValueText);
             
-            console.log('Updated value text to:', gate.value, 'at position:', gate.x + GATE_WIDTH / 2, gate.y - 10); // Debug
         }
         
         // Actualizar contador de pines para compuertas de múltiples entradas
@@ -1027,32 +957,26 @@ class LogicGatesSimulator {
     }
     
     updateAllPins() {
-        console.log('updateAllPins called'); // Debug
         this.gates.forEach(gate => {
             [...gate.inputPins, ...gate.outputPins].forEach(pin => {
                 const circle = this.gatesLayer.querySelector(`[data-pin-id="${pin.id}"]`);
                 if (circle) {
                     circle.classList.remove('high', 'low');
                     circle.classList.add(pin.value === 1 ? 'high' : 'low');
-                    console.log('Updated pin', pin.id, 'to value', pin.value); // Debug
                 } else {
-                    console.log('Pin element not found for', pin.id); // Debug
                 }
             });
         });
     }
     
     updateAllConnections() {
-        console.log('updateAllConnections called, connections:', this.connections.length); // Debug
         this.connections.forEach(connection => {
             const line = this.connectionsLayer.querySelector(`[data-connection-id="${connection.id}"]`);
             if (line) {
                 line.classList.remove('high', 'low');
                 const value = connection.outputPin.value;
                 line.classList.add(value === 1 ? 'high' : 'low');
-                console.log('Updated connection', connection.id, 'to value', value); // Debug
             } else {
-                console.log('Connection element not found for', connection.id); // Debug
             }
         });
     }
@@ -1066,7 +990,6 @@ class LogicGatesSimulator {
             this.tempConnection.setAttribute('y2', y);
             this.tempConnection.style.opacity = '0.8'; // Hacer más visible
             this.tempConnection.setAttribute('stroke-width', '3'); // Línea más gruesa
-            console.log('Temp connection updated from', startPos.x, startPos.y, 'to', x, y);
         }
     }
     
