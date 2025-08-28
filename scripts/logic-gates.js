@@ -12,7 +12,7 @@ const GateType = {
 
 const GATE_WIDTH = 80;
 const GATE_HEIGHT = 60;
-const PIN_RADIUS = 6;
+const PIN_RADIUS = 6; // Tamaño visual de los pines
 
 // ==================== CLASES ====================
 class Pin {
@@ -1102,6 +1102,9 @@ class LogicGatesSimulator {
         
         html += '</tr></thead><tbody>';
         
+        // Guardar valores originales
+        const originalValues = inputGates.map(gate => gate.value);
+        
         // Generar filas
         for (let i = 0; i < numRows; i++) {
             html += '<tr>';
@@ -1114,10 +1117,13 @@ class LogicGatesSimulator {
             
             // Simular con estos valores
             inputGates.forEach((gate, index) => {
-                gate.value = (i >> (numInputs - 1 - index)) & 1;
+                const inputValue = (i >> (numInputs - 1 - index)) & 1;
+                gate.value = inputValue;
+                gate.outputPins[0].value = inputValue;
             });
             
-            this.updateCircuit();
+            // Propagar cambios manualmente para tabla de verdad
+            this.propagateForTruthTable();
             
             // Valores de salida
             outputGates.forEach(gate => {
@@ -1131,8 +1137,47 @@ class LogicGatesSimulator {
         html += '</tbody></table>';
         container.innerHTML = html;
         
-        // Restaurar valores originales y actualizar
-        this.updateCircuit();
+        // Restaurar valores originales
+        inputGates.forEach((gate, index) => {
+            gate.value = originalValues[index];
+            gate.outputPins[0].value = originalValues[index];
+        });
+        
+        // Propagar valores originales
+        this.propagateForTruthTable();
+    }
+    
+    propagateForTruthTable() {
+        // Propagar valores a través de todas las conexiones
+        const maxIterations = 10; // Evitar bucles infinitos
+        
+        for (let iteration = 0; iteration < maxIterations; iteration++) {
+            let changed = false;
+            
+            // Para cada conexión, propagar el valor
+            for (const connection of this.connections) {
+                const outputValue = connection.outputPin.value;
+                if (connection.inputPin.value !== outputValue) {
+                    connection.inputPin.value = outputValue;
+                    changed = true;
+                }
+            }
+            
+            // Calcular salidas de todas las compuertas (excepto INPUT)
+            for (const gate of this.gates) {
+                if (gate.gateType !== GateType.INPUT) {
+                    const oldOutput = gate.outputPins[0].value;
+                    gate.updateInputValues();
+                    gate.calculateOutput();
+                    if (gate.outputPins[0].value !== oldOutput) {
+                        changed = true;
+                    }
+                }
+            }
+            
+            // Si no hubo cambios, la propagación está completa
+            if (!changed) break;
+        }
     }
 }
 
