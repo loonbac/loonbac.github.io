@@ -5,7 +5,7 @@ function validarIP(ip) {
 }
 
 function validarPrefijo(prefijo) {
-    return prefijo >= 1 && prefijo <= 30;
+    return Number.isInteger(prefijo) && prefijo >= 1 && prefijo <= 30;
 }
 
 function calcularPrefijoDesdeHosts(numHosts) {
@@ -13,14 +13,13 @@ function calcularPrefijoDesdeHosts(numHosts) {
 }
 
 function calcularWildcard(mascara) {
-    const partes = mascara.split('.').map(Number);
-    return partes.map(parte => 255 - parte).join('.');
+    return mascara.split('.').map(parte => 255 - parseInt(parte)).join('.');
 }
 
 // ==================== FUNCIONES DE CONVERSIÓN IP ====================
 function ipToInt(ip) {
     const partes = ip.split('.').map(Number);
-    return (partes[0] << 24) | (partes[1] << 16) | (partes[2] << 8) | partes[3];
+    return ((partes[0] << 24) | (partes[1] << 16) | (partes[2] << 8) | partes[3]) >>> 0;
 }
 
 function intToIP(int) {
@@ -212,9 +211,15 @@ function mostrarError(container, mensaje) {
     container.innerHTML = `
         <div class="error-message">
             <span class="error-icon">⚠️</span>
-            <span class="error-text">${mensaje}</span>
+            <span class="error-text">${escapeHTML(mensaje)}</span>
         </div>
     `;
+}
+
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }
 
 function mostrarResultadosVLSM(subredes, container) {
@@ -337,87 +342,78 @@ function initTabs() {
     const panes = document.querySelectorAll('.tab-pane');
     const slider = document.getElementById('tab-slider');
     
+    if (!slider) return;
+    
     tabs.forEach((tab, index) => {
         tab.addEventListener('click', () => {
-            // Remover active de todos
             tabs.forEach(t => t.classList.remove('active'));
             panes.forEach(p => p.classList.remove('active'));
             
-            // Activar el clickeado
             tab.classList.add('active');
             const targetPane = document.getElementById(`pane-${tab.dataset.tab}`);
             if (targetPane) {
                 targetPane.classList.add('active');
             }
             
-            // Mover slider
             slider.style.left = `${index * 50}%`;
         });
     });
 }
 
 // ==================== SISTEMA DE TEMAS ====================
-function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
-function setTheme(t){
-    document.documentElement.setAttribute('data-theme',t);
+function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+}
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
     document.body.classList.add('theme-flip');
-    setTimeout(()=>document.body.classList.remove('theme-flip'),450);
+    setTimeout(() => document.body.classList.remove('theme-flip'), 450);
+    
     const themeBtn = document.getElementById('flipTheme');
-    if(themeBtn){
+    if (themeBtn) {
         const label = themeBtn.querySelector('.theme-name');
-        if(label) label.textContent = t==='dark'?'Dark':'Light';
-        const isDark = t==='dark';
+        if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+        
+        const isDark = theme === 'dark';
         themeBtn.setAttribute('aria-pressed', String(isDark));
         themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
     }
-    try{localStorage.setItem('retro-theme',t);}catch(e){}
+    
+    try {
+        localStorage.setItem('retro-theme', theme);
+    } catch (e) {
+        // Silenciar error si localStorage no está disponible
+    }
+}
+
+function autocompletarCampo(elementId, valorPredeterminado) {
+    const elemento = document.getElementById(elementId);
+    if (elemento) {
+        elemento.addEventListener('focus', function() {
+            if (!this.value) {
+                this.value = valorPredeterminado;
+            }
+        });
+    }
 }
 
 // ==================== INICIALIZACIÓN ====================
 document.addEventListener('DOMContentLoaded', function() {
     initTabs();
     
-    // Inicializar tema
     const saved = localStorage.getItem('retro-theme');
     setTheme(saved || 'dark');
     
     const themeBtn = document.getElementById('flipTheme');
-    themeBtn?.addEventListener('click',()=>setTheme(getTheme()==='dark'?'light':'dark'));
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
+    }
     
-    // Ejemplos rápidos
-    document.getElementById('vlsm-ip').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '192.168.1.0';
-        }
-    });
-    
-    document.getElementById('vlsm-prefix').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '24';
-        }
-    });
-    
-    document.getElementById('vlsm-hosts').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '100, 50, 25, 10';
-        }
-    });
-    
-    document.getElementById('enlaces-ip').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '10.0.0.0';
-        }
-    });
-    
-    document.getElementById('enlaces-prefix').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '16';
-        }
-    });
-    
-    document.getElementById('enlaces-count').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = '5';
-        }
-    });
+    autocompletarCampo('vlsm-ip', '192.168.1.0');
+    autocompletarCampo('vlsm-prefix', '24');
+    autocompletarCampo('vlsm-hosts', '100, 50, 25, 10');
+    autocompletarCampo('enlaces-ip', '10.0.0.0');
+    autocompletarCampo('enlaces-prefix', '16');
+    autocompletarCampo('enlaces-count', '5');
 });
