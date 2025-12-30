@@ -7,8 +7,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    // Cambia esta URL a la IP/dominio de tu VPS
-    const API_BASE_URL = 'https://93e9c4be1495.ngrok-free.app';  // <-- CAMBIAR ESTO
+    const API_BASE_URL = 'https://93e9c4be1495.ngrok-free.app';
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -221,7 +220,11 @@
         `;
             }
 
-            const response = await fetch(`${API_BASE_URL}/api/coleccion`);
+            const response = await fetch(`${API_BASE_URL}/api/coleccion`, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
             if (!response.ok) throw new Error('Error al conectar con la API');
 
             const data = await response.json();
@@ -264,4 +267,3 @@
         loadCollection();
     }
 })();
-
