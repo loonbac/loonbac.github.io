@@ -7,7 +7,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    const API_BASE_URL = '143.20.99.69:5000';
+    const API_BASE_URL = 'http://143.20.99.69:5000';
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -261,4 +261,5 @@
         loadCollection();
     }
 })();
+
 
