@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LoonBac21 :: Gachapon Collection</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Colección de cartas anime de LoonBac21 - Gachapon Dashboard">
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="img/ico.png">
+    <link rel="shortcut icon" type="image/png" href="img/ico.png">
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap"
+        as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/gachapon.css">
+</head>
+
+<body>
+    <header class="terminal-container" id="terminalContainer">
+        <div class="terminal-main">
+            <div class="bar-inner">
+                <span class="prompt">loonbac@drix:~$</span>
+                <span class="terminal-text">cat coleccion.json</span>
+                <span class="blip" aria-hidden="true"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <!-- PANEL HEADER -->
+        <section class="panel dashboard-header">
+            <div class="header-content">
+                <a href="index.html" class="back-link">← Volver</a>
+                <h1><span class="accent">🎴</span> Gachapon Collection</h1>
+                <p class="mono line">Mi colección de cartas del bot Gachapon en Discord. Creado por <span
+                        class="accent">LoonBac21</span></p>
+            </div>
+            <div class="actions">
+                <button class="btn ghost" id="flipTheme" type="button">Tema <span
+                        class="theme-name">Dark</span></button>
+            </div>
+        </section>
+
+        <!-- PANEL ESTADÍSTICAS -->
+        <section class="panel stats-panel" id="statsPanel">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-value" id="totalCards">0</span>
+                    <span class="stat-label">Cartas Totales</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="fiveStarCards">0</span>
+                    <span class="stat-label">⭐⭐⭐⭐⭐</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="fourStarCards">0</span>
+                    <span class="stat-label">⭐⭐⭐⭐</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="uniqueSeries">0</span>
+                    <span class="stat-label">Series Únicas</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTROS -->
+        <section class="panel filters-panel">
+            <div class="filters-row">
+                <label class="filter-group">
+                    <span class="filter-label">Ordenar:</span>
+                    <select id="sortBy" class="filter-select">
+                        <option value="stars-desc">⭐ Mayor a menor</option>
+                        <option value="stars-asc">⭐ Menor a mayor</option>
+                        <option value="series">Serie A-Z</option>
+                        <option value="character">Personaje A-Z</option>
+                    </select>
+                </label>
+                <label class="filter-group">
+                    <span class="filter-label">Estrellas:</span>
+                    <select id="filterStars" class="filter-select">
+                        <option value="all">Todas</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                </label>
+                <label class="filter-group">
+                    <span class="filter-label">Serie:</span>
+                    <select id="filterSeries" class="filter-select">
+                        <option value="all">Todas las series</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <!-- GRID DE CARTAS -->
+        <section class="panel cards-section" id="cardsSection">
+            <h2 class="panel-heading">Colección <span class="card-count" id="cardCount"></span></h2>
+            <div class="cards-grid" id="cardsGrid">
+                <div class="loading-state">
+                    <span class="loading-icon">⏳</span>
+                    <span class="loading-text">Cargando colección...</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <p class="mono tiny">&copy; <span id="year"></span> LoonBac21 · Gachapon Collection Dashboard | ESTE PROCESO NO
+            ESTA
+            AUTOMATIZADO DE NINGUNA MANERA.</p>
+    </footer>
+
+    <script src="scripts/gachapon.js"></script>
+</body>
+
+</html>
