@@ -7,8 +7,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    // Cambia esta URL a la IP/dominio de tu VPS
-    const API_BASE_URL = 'http://TU_IP_VPS:5000';  // <-- CAMBIAR ESTO
+    const API_BASE_URL = '143.20.99.69:5000';
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -262,3 +261,4 @@
         loadCollection();
     }
 })();
+
