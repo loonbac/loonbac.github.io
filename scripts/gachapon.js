@@ -8,7 +8,7 @@
 (function () {
     // ==================== API CONFIGURATION ====================
     // Cambia esta URL a la IP/dominio de tu VPS
-    const API_BASE_URL = 'https://sensitivity-dietary-tribunal-racks.trycloudflare.com';  // <-- CAMBIAR ESTO
+    const API_BASE_URL = 'https://93e9c4be1495.ngrok-free.app';  // <-- CAMBIAR ESTO
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -264,3 +264,4 @@
         loadCollection();
     }
 })();
+
