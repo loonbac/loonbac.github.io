@@ -103,7 +103,7 @@
       <article class="anime-card ${portraitClass}" data-stars="${card.estrellas}" data-series="${card.serie}">
         <figure class="card-image">
           ${card.imagen
-                ? `<img src="${API_BASE_URL}${card.imagen}" alt="${card.personaje}" loading="lazy">`
+                ? `<img data-src="${API_BASE_URL}${card.imagen}" alt="${card.personaje}" loading="lazy">`
                 : `<div class="image-placeholder">🎴</div>`
             }
           <span class="tier-badge">Tier ${card.tier}</span>
@@ -116,6 +116,25 @@
         </div>
       </article>
     `;
+    }
+
+    // Cargar imágenes con header para ngrok
+    async function loadImagesWithHeader() {
+        const images = document.querySelectorAll('img[data-src]');
+        for (const img of images) {
+            const url = img.dataset.src;
+            try {
+                const response = await fetch(url, {
+                    headers: { 'ngrok-skip-browser-warning': 'true' }
+                });
+                if (response.ok) {
+                    const blob = await response.blob();
+                    img.src = URL.createObjectURL(blob);
+                }
+            } catch (e) {
+                console.log('Error loading image:', url);
+            }
+        }
     }
 
     // Render cards
@@ -133,6 +152,9 @@
 
         grid.innerHTML = cards.map(card => createCardHTML(card)).join('');
         if (countEl) countEl.textContent = `(${cards.length})`;
+
+        // Cargar imágenes con header ngrok
+        loadImagesWithHeader();
     }
 
     // Sort cards
