@@ -7,7 +7,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    const API_BASE_URL = 'https://sensitivity-dietary-tribunal-racks.trycloudflare.com ';
+    const API_BASE_URL = 'https://sensitivity-dietary-tribunal-racks.trycloudflare.com';
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -261,6 +261,7 @@
         loadCollection();
     }
 })();
+
 
 
 
