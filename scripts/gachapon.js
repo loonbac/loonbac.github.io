@@ -7,7 +7,8 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    const API_BASE_URL = 'https://sensitivity-dietary-tribunal-racks.trycloudflare.com';
+    // Cambia esta URL a la IP/dominio de tu VPS
+    const API_BASE_URL = 'https://sensitivity-dietary-tribunal-racks.trycloudflare.com';  // <-- CAMBIAR ESTO
 
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
@@ -48,7 +49,8 @@
             id: card.id_limpio || String(card.id || '').replace(/[`\s]/g, ''),
             serie: card.serie_limpia || card.serie || 'Unknown',
             personaje: String(card.personaje || 'Unknown').replace(/\*+/g, ''),
-            imagen: card.imagen || null
+            imagen: card.imagen || null,
+            is_portrait: card.is_portrait || false
         };
     }
 
@@ -97,8 +99,9 @@
 
     // Create card HTML (VIEW ONLY - no buttons)
     function createCardHTML(card) {
+        const portraitClass = card.is_portrait ? 'portrait' : '';
         return `
-      <article class="anime-card" data-stars="${card.estrellas}" data-series="${card.serie}">
+      <article class="anime-card ${portraitClass}" data-stars="${card.estrellas}" data-series="${card.serie}">
         <figure class="card-image">
           ${card.imagen
                 ? `<img src="${API_BASE_URL}${card.imagen}" alt="${card.personaje}" loading="lazy">`
@@ -261,7 +264,3 @@
         loadCollection();
     }
 })();
-
-
-
-
