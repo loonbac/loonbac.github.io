@@ -6,7 +6,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    const API_BASE_URL = 'http://practice-latvia.gl.at.ply.gg:47413';
+    const API_BASE_URL = 'https://143.20.99.69:5000';
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
 
@@ -261,3 +261,4 @@
         loadCollection();
     }
 })();
+
