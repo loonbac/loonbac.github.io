@@ -1,51 +1,51 @@
-(function(){
+(function () {
   const body = document.body;
   const themeBtn = document.getElementById('flipTheme');
 
-  function getTheme(){return document.documentElement.getAttribute('data-theme')||'dark';}
-  function setTheme(t){
-    document.documentElement.setAttribute('data-theme',t);
+  function getTheme() { return document.documentElement.getAttribute('data-theme') || 'dark'; }
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
     body.classList.add('theme-flip');
-    setTimeout(()=>body.classList.remove('theme-flip'),450);
-    if(themeBtn){
+    setTimeout(() => body.classList.remove('theme-flip'), 450);
+    if (themeBtn) {
       const label = themeBtn.querySelector('.theme-name');
-      if(label) label.textContent = t==='dark'?'Dark':'Light';
-      const isDark = t==='dark';
+      if (label) label.textContent = t === 'dark' ? 'Dark' : 'Light';
+      const isDark = t === 'dark';
       themeBtn.setAttribute('aria-pressed', String(isDark));
       themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
     }
-    try{localStorage.setItem('retro-theme',t);}catch(e){}
+    try { localStorage.setItem('retro-theme', t); } catch (e) { }
   }
 
   const avatarFrame = document.getElementById('avatarFrame');
   const speechBubble = document.getElementById('speechBubble');
-  
+
   const messages = ['¡Hola!', '¡EY EY EY!', 'Ressy tiene funciones ocultas', 'Im NOT old', 'Undertale/Deltarune Fan', 'Minecraft Player', '¡Bienvenido!'];
   let isShowing = false;
-  
-  function showBubble(){
-    if(!speechBubble || !avatarFrame || isShowing) return;
-    
+
+  function showBubble() {
+    if (!speechBubble || !avatarFrame || isShowing) return;
+
     isShowing = true;
-    
+
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     speechBubble.querySelector('.bubble-content').textContent = randomMessage;
-    
+
     speechBubble.style.top = '100%';
     speechBubble.style.marginTop = '20px';
-    
+
     requestAnimationFrame(() => {
       speechBubble.classList.add('show');
     });
-    
+
     setTimeout(() => {
       speechBubble.classList.remove('show');
       isShowing = false;
     }, 3000);
   }
-  
-  if(avatarFrame){
-    avatarFrame.addEventListener('click', function(e){
+
+  if (avatarFrame) {
+    avatarFrame.addEventListener('click', function (e) {
       e.preventDefault();
       showBubble();
     });
@@ -56,71 +56,75 @@
   const executedCommand = document.getElementById('executedCommand');
   const commandResult = document.getElementById('commandResult');
   const terminalContainer = document.getElementById('terminalContainer');
-  
+
   let currentInput = '';
   let isTyping = false;
   let commandBuffer = [];
   let historyIndex = -1;
-  
+
   const commands = new Map();
-  
+
   function encrypt(str) {
-    return btoa(str.replace(/[a-zA-Z]/g, function(c) {
+    return btoa(str.replace(/[a-zA-Z]/g, function (c) {
       return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
     }));
   }
-  
+
   function decrypt(str) {
     try {
       const decoded = atob(str);
-      return decoded.replace(/[a-zA-Z]/g, function(c) {
+      return decoded.replace(/[a-zA-Z]/g, function (c) {
         return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
       });
-    } catch(e) {
+    } catch (e) {
       return '';
     }
   }
-  
+
   commands.set(encrypt('cybersen'), () => {
     window.open('https://cybersen.online/', '_blank');
     clearTerminalOnly();
   });
-  
-  
+
+
   commands.set(encrypt('konami'), () => {
     triggerKonamiEffect();
     clearTerminalOnly();
   });
-  
+
+  commands.set(encrypt('downloader'), () => {
+    window.location.href = 'downloader.html';
+  });
+
   function clearTerminalOnly() {
-    if(terminalText) {
+    if (terminalText) {
       terminalText.textContent = '';
       currentInput = '';
       isTyping = false;
     }
   }
-  
+
   function clearTerminalAndOutput() {
     clearTerminalOnly();
     hideOutput();
   }
-  
+
   function showCommandOutput(command, output) {
-    
-    if(!executedCommand || !commandResult || !terminalOutput) {
+
+    if (!executedCommand || !commandResult || !terminalOutput) {
       return;
     }
-    
+
     executedCommand.textContent = command;
-    
+
     commandResult.textContent = '';
-    
+
     terminalOutput.classList.add('show');
-    
+
     setTimeout(() => {
       let i = 0;
       function typeChar() {
-        if(i < output.length) {
+        if (i < output.length) {
           commandResult.textContent += output.charAt(i);
           i++;
           setTimeout(typeChar, 30);
@@ -133,33 +137,33 @@
       typeChar();
     }, 500);
   }
-  
+
   function hideOutput() {
-    if(terminalOutput) {
+    if (terminalOutput) {
       terminalOutput.classList.remove('show');
     }
   }
-  
+
   function updateTerminalDisplay() {
-    if(terminalText && !isTyping) {
+    if (terminalText && !isTyping) {
       terminalText.textContent = currentInput;
     }
   }
-  
+
   function executeCommand(cmd) {
     const normalizedCmd = cmd.toLowerCase().trim();
-    
-    for(let [encryptedCmd, action] of commands) {
-      if(decrypt(encryptedCmd) === normalizedCmd) {
+
+    for (let [encryptedCmd, action] of commands) {
+      if (decrypt(encryptedCmd) === normalizedCmd) {
         action();
         return true;
       }
     }
-    
-    if(normalizedCmd === 'date') {
+
+    if (normalizedCmd === 'date') {
       showCommandOutput('date', new Date().toLocaleString('es-ES', {
         year: 'numeric',
-        month: '2-digit', 
+        month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
@@ -168,36 +172,36 @@
       clearTerminalOnly();
       return true;
     }
-    
-    if(normalizedCmd === 'whoami') {
+
+    if (normalizedCmd === 'whoami') {
       showCommandOutput('whoami', 'loonbac21');
       clearTerminalOnly();
       return true;
     }
-    
-    if(normalizedCmd === 'pwd') {
+
+    if (normalizedCmd === 'pwd') {
       showCommandOutput('pwd', '/home/loonbac');
       clearTerminalOnly();
       return true;
     }
-    
-    if(normalizedCmd === 'ls') {
+
+    if (normalizedCmd === 'ls') {
       showCommandOutput('ls', 'index.html  vlsm.html  styles/  scripts/  img/');
       clearTerminalOnly();
       return true;
     }
-    
-    if(normalizedCmd === 'ps') {
+
+    if (normalizedCmd === 'ps') {
       showCommandOutput('ps', 'PID TTY    TIME CMD\n2021 pts/0  00:00:00 bash\n2045 pts/0  00:00:00 ps');
       clearTerminalOnly();
       return true;
     }
-    
+
     showCommandOutput(normalizedCmd, `bash: ${normalizedCmd}: command not found`);
     clearTerminalOnly();
     return true;
   }
-  
+
   function triggerKonamiEffect() {
     document.body.style.transform = 'rotate(360deg)';
     document.body.style.transition = 'transform 1s ease-in-out';
@@ -206,45 +210,45 @@
       document.body.style.transition = '';
     }, 1000);
   }
-  
-  document.addEventListener('keydown', function(e) {
-    if(isTyping) return;
-    
-    if(e.key === 'Enter') {
+
+  document.addEventListener('keydown', function (e) {
+    if (isTyping) return;
+
+    if (e.key === 'Enter') {
       e.preventDefault();
-      if(currentInput.trim()) {
+      if (currentInput.trim()) {
         commandBuffer.push(currentInput);
         historyIndex = commandBuffer.length;
         executeCommand(currentInput);
       }
       return;
     }
-    
-    if(e.key === 'Escape') {
+
+    if (e.key === 'Escape') {
       clearTerminalAndOutput();
       return;
     }
-    
-    if(e.key === 'Backspace') {
+
+    if (e.key === 'Backspace') {
       e.preventDefault();
       currentInput = currentInput.slice(0, -1);
       updateTerminalDisplay();
       return;
     }
-    
-    if(e.key === 'ArrowUp') {
+
+    if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if(historyIndex > 0) {
+      if (historyIndex > 0) {
         historyIndex--;
         currentInput = commandBuffer[historyIndex] || '';
         updateTerminalDisplay();
       }
       return;
     }
-    
-    if(e.key === 'ArrowDown') {
+
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if(historyIndex < commandBuffer.length - 1) {
+      if (historyIndex < commandBuffer.length - 1) {
         historyIndex++;
         currentInput = commandBuffer[historyIndex] || '';
       } else {
@@ -254,18 +258,18 @@
       updateTerminalDisplay();
       return;
     }
-    
-    if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
-      if(currentInput.length < 50) {
+      if (currentInput.length < 50) {
         currentInput += e.key;
         updateTerminalDisplay();
       }
     }
   });
-  
-  if(terminalContainer) {
-    terminalContainer.addEventListener('click', function(e) {
+
+  if (terminalContainer) {
+    terminalContainer.addEventListener('click', function (e) {
       terminalContainer.style.outline = '2px solid var(--c-accent)';
       setTimeout(() => {
         terminalContainer.style.outline = '';
@@ -276,16 +280,16 @@
 
   let konamiSequence = [];
   const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-  
-  document.addEventListener('keydown', function(e) {
+
+  document.addEventListener('keydown', function (e) {
     konamiSequence.push(e.code);
-    
-    if(konamiSequence.length > konamiCode.length) {
+
+    if (konamiSequence.length > konamiCode.length) {
       konamiSequence.shift();
     }
-    
-    if(konamiSequence.length === konamiCode.length && 
-       konamiSequence.every((key, i) => key === konamiCode[i])) {
+
+    if (konamiSequence.length === konamiCode.length &&
+      konamiSequence.every((key, i) => key === konamiCode[i])) {
       triggerKonamiEffect();
       showCommandOutput('konami', '¡Código Konami activado!');
       konamiSequence = [];
@@ -295,15 +299,15 @@
   const saved = localStorage.getItem('retro-theme');
   setTheme(saved || 'dark');
 
-  themeBtn?.addEventListener('click',()=>setTheme(getTheme()==='dark'?'light':'dark'));
+  themeBtn?.addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
 
   const yearEl = document.getElementById('year');
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   const mq = window.matchMedia('(prefers-color-scheme: light)');
-  mq.addEventListener('change', e=>{
-    if(!localStorage.getItem('retro-theme')){
-      setTheme(e.matches?'light':'dark');
+  mq.addEventListener('change', e => {
+    if (!localStorage.getItem('retro-theme')) {
+      setTheme(e.matches ? 'light' : 'dark');
     }
   });
 })();

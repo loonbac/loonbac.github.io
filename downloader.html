@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LoonBac21 :: Video Downloader</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Descargador de videos - Twitter, YouTube, TikTok y más">
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="img/ico.png">
+    <link rel="shortcut icon" type="image/png" href="img/ico.png">
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap"
+        as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/downloader.css">
+</head>
+
+<body>
+    <header class="top-bar">
+        <div class="bar-inner">
+            <span class="prompt">loonbac@drix:~$ video-downloader</span>
+            <span class="blip" aria-hidden="true"></span>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <!-- PANEL HEADER -->
+        <section class="panel">
+            <div class="downloader-header">
+                <div class="header-content">
+                    <div class="title-row">
+                        <h1 class="downloader-title">
+                            <span class="accent">📥 Video Downloader</span>
+                        </h1>
+                    </div>
+                    <p class="mono downloader-subtitle">Descarga videos de Twitter/X, YouTube, TikTok, Instagram, Reddit
+                        y más</p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn ghost" id="flipTheme" type="button">Tema <span
+                            class="theme-name">Dark</span></button>
+                    <a class="btn slim" href="index.html">← Volver</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL INPUT -->
+        <section class="panel">
+            <h3 class="section-title accent">Pegar URL del Video</h3>
+            <div class="url-input-container">
+                <div class="input-group">
+                    <label class="input-label" for="videoUrl">URL del video:</label>
+                    <div class="input-row">
+                        <input type="text" id="videoUrl" class="calc-input url-input"
+                            placeholder="Link de cualquier Plataforma">
+                        <button class="btn analyze-btn" id="analyzeBtn">
+                            <span class="btn-icon">🔍</span>
+                            Analizar
+                        </button>
+                    </div>
+                    <small class="input-hint">Soporta: Twitter/X, YouTube, TikTok, Instagram, Reddit y más</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL RESULTADO -->
+        <section class="panel result-panel" id="resultPanel" style="display: none;">
+            <h3 class="section-title accent">Información del Video</h3>
+
+            <div class="video-result" id="videoResult">
+                <!-- Contenido dinámico -->
+            </div>
+        </section>
+
+        <!-- PANEL LOADING -->
+        <section class="panel" id="loadingPanel" style="display: none;">
+            <div class="loading-state">
+                <span class="loading-icon">⏳</span>
+                <span class="loading-text mono">Analizando video...</span>
+            </div>
+        </section>
+
+        <!-- PANEL ERROR -->
+        <section class="panel" id="errorPanel" style="display: none;">
+            <div class="error-state">
+                <span class="error-icon">❌</span>
+                <p id="errorMessage">Error al procesar el video</p>
+            </div>
+        </section>
+
+        <!-- PANEL PLATAFORMAS -->
+        <section class="panel">
+            <h2 class="panel-heading">Plataformas Soportadas</h2>
+            <div class="platforms-grid">
+                <div class="platform-box">
+                    <span class="platform-icon">🐦</span>
+                    <span class="platform-name">Twitter/X</span>
+                </div>
+                <div class="platform-box">
+                    <span class="platform-icon">▶️</span>
+                    <span class="platform-name">YouTube</span>
+                </div>
+                <div class="platform-box">
+                    <span class="platform-icon">🎵</span>
+                    <span class="platform-name">TikTok</span>
+                </div>
+                <div class="platform-box">
+                    <span class="platform-icon">📷</span>
+                    <span class="platform-name">Instagram</span>
+                </div>
+                <div class="platform-box">
+                    <span class="platform-icon">🤖</span>
+                    <span class="platform-name">Reddit</span>
+                </div>
+                <div class="platform-box">
+                    <span class="platform-icon">📘</span>
+                    <span class="platform-name">Facebook</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <p class="mono tiny">&copy; <span id="year"></span> LoonBac21 · Video Downloader | Powered by yt-dlp</p>
+    </footer>
+
+    <script src="scripts/downloader.js"></script>
+</body>
+
+</html>
