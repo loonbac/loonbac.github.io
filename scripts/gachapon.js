@@ -239,10 +239,10 @@
             if (grid) {
                 grid.innerHTML = `
           <div class="error-state">
-            <div class="error-icon">❌</div>
+            <span class="error-icon">❌</span>
             <p>Error al cargar la colección</p>
-            <p style="font-size: .7rem; opacity: .7">${error.message}</p>
-            <p style="font-size: .6rem; opacity: .5; margin-top: 1rem;">
+            <p class="mono" style="font-size: .7rem; opacity: .7">${error.message}</p>
+            <p class="mono" style="font-size: .6rem; opacity: .5; margin-top: .5rem;">
               API: ${API_BASE_URL}
             </p>
           </div>

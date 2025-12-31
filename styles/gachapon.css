@@ -1,42 +1,139 @@
 /* ==================== GACHAPON COLLECTION STYLES ==================== */
 
-/* Dashboard Header */
-.dashboard-header {
+/* Top Bar (same as vlsm.css / logic-gates.css) */
+.top-bar {
+  position: sticky;
+  top: 0;
+  background: var(--c-bg-alt);
+  border-bottom: 2px solid var(--c-line);
+  padding: .35rem .75rem;
+  z-index: 60;
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+.top-bar .bar-inner {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  flex-wrap: nowrap;
+  position: relative;
+}
+
+.top-bar .prompt {
+  color: var(--c-accent);
+  flex-shrink: 0;
+  margin-right: .5rem;
+}
+
+.top-bar .blip {
+  width: 8px;
+  height: 16px;
+  background: var(--c-accent);
+  animation: blink 1s steps(2, start) infinite;
+  flex-shrink: 0;
+  margin-left: 1px;
+}
+
+@keyframes blink {
+
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Gachapon Header (same pattern as vlsm/logic-gates) */
+.gachapon-header {
+  display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.title-row {
+  display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: .5rem;
+  flex-wrap: wrap;
 }
 
-.header-content h1 {
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  margin: 0 0 .4rem;
-  line-height: 1.2;
-}
-
-.header-content .line {
+.gachapon-title {
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
   margin: 0;
+  line-height: 1.1;
+  letter-spacing: .5px;
 }
 
-.back-link {
-  display: inline-block;
+.credits-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--c-bg-alt);
+  border: 1px solid var(--c-line);
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  font-size: .65rem;
+  width: fit-content;
+}
+
+.credits-text {
+  color: var(--c-text-dim);
+  font-weight: 600;
+}
+
+.credits-link {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
   color: var(--c-accent);
   text-decoration: none;
-  font-size: .75rem;
-  margin-bottom: .5rem;
+  font-weight: 600;
   transition: var(--transition);
 }
 
-.back-link:hover {
-  text-decoration: underline;
+.credits-link:hover {
+  color: #fff;
+  text-shadow: 0 0 4px var(--c-accent);
 }
 
-/* Stats Panel */
-.stats-panel {
-  padding: 1.2rem;
+.github-icon {
+  font-size: .8rem;
 }
 
+.external-icon {
+  font-size: .7rem;
+  transform: translateY(-1px);
+}
+
+.header-buttons {
+  display: flex;
+  gap: .5rem;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* Section Title (matching vlsm.css) */
+.section-title {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  letter-spacing: .5px;
+}
+
+/* Stats Grid */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -94,47 +191,76 @@
   font-weight: 600;
 }
 
-/* Filters Panel */
-.filters-panel {
-  padding: 1rem 1.2rem;
-}
-
+/* Filters (using calc-input pattern from vlsm.css) */
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
+  gap: 1.5rem;
+  align-items: flex-end;
 }
 
 .filter-group {
   display: flex;
-  align-items: center;
-  gap: .5rem;
+  flex-direction: column;
+  gap: .4rem;
+  margin-bottom: 0;
 }
 
-.filter-label {
-  font-size: .7rem;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  color: var(--c-text-dim);
-  font-weight: 600;
-}
-
-.filter-select {
-  font-family: var(--mono);
+/* Input Label (matching vlsm.css) */
+.input-label {
+  display: block;
   font-size: .75rem;
-  padding: .5rem .8rem;
-  background: var(--c-bg-alt);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: .4rem;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* Calc Input / Filter Select (matching vlsm.css) */
+.calc-input,
+.filter-select {
+  width: 100%;
+  min-width: 160px;
+  padding: .6rem .8rem;
+  background: var(--c-bg);
   border: 2px solid var(--c-line);
   color: var(--c-text);
-  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .5px;
   transition: var(--transition);
+  cursor: pointer;
+  /* Reset appearance for custom styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2325c8c8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .8rem center;
+  padding-right: 2.5rem;
 }
 
-.filter-select:hover,
-.filter-select:focus {
+.calc-input:hover,
+.filter-select:hover {
   border-color: var(--c-accent);
+}
+
+.calc-input:focus,
+.filter-select:focus {
   outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px rgba(37, 200, 200, 0.2);
+}
+
+.calc-input option,
+.filter-select option {
+  background: var(--c-bg-alt);
+  color: var(--c-text);
+  font-family: var(--mono);
+  padding: .5rem;
 }
 
 /* Cards Section */
@@ -164,7 +290,7 @@
   }
 }
 
-/* Anime Card */
+/* Anime Card (matching proj-card pattern) */
 .anime-card {
   background: var(--c-bg-alt);
   border: 2px solid var(--c-line);
@@ -174,6 +300,7 @@
   overflow: hidden;
   transition: var(--transition);
   min-height: 320px;
+  isolation: isolate;
 }
 
 .anime-card::before,
@@ -198,8 +325,7 @@
 
 .anime-card:hover {
   border-color: var(--c-accent);
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(37, 200, 200, .25);
+  transform: translateY(-4px);
 }
 
 .anime-card:hover::before {
@@ -207,17 +333,18 @@
 }
 
 .anime-card:hover::after {
-  opacity: .4;
+  opacity: .35;
 }
 
-/* Card Image */
+/* Card Image (matching proj-media) */
 figure.card-image {
   margin: 0;
   padding: 0;
   position: relative;
   width: 100%;
   aspect-ratio: 2/3;
-  background: transparent;
+  background: #050505;
+  border-bottom: 2px solid var(--c-line);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -230,15 +357,16 @@ figure.card-image {
   object-fit: cover;
   object-position: center top;
   display: block;
-  filter: brightness(0.92) contrast(1.05) saturate(1.1);
+  filter: brightness(0.92) contrast(1.05);
   transition: var(--transition);
 }
 
 .anime-card:hover .card-image img {
-  filter: brightness(1) contrast(1.1) saturate(1.2);
+  transform: scale(1.05);
+  filter: brightness(1) contrast(1.1);
 }
 
-/* Scanline effect */
+/* Scanline effect on images */
 .card-image::after {
   content: "";
   position: absolute;
@@ -252,10 +380,7 @@ figure.card-image {
   pointer-events: none;
 }
 
-/* ============================================
-   ESTILOS PARA CARTAS PORTRAIT
-   Cartas con aspect ratio horizontal (740x416)
-   ============================================ */
+/* Portrait Cards */
 .anime-card.portrait {
   grid-column: span 2;
 }
@@ -279,69 +404,83 @@ figure.card-image {
   background: transparent;
 }
 
-/* Placeholder para portrait */
 .anime-card.portrait .image-placeholder {
   aspect-ratio: 740 / 416;
 }
 
-/* En móvil, portrait ocupa todo el ancho */
 @media (max-width: 600px) {
   .anime-card.portrait {
     grid-column: span 1;
   }
 }
 
-/* Tier Badge */
+/* Tier Badge (matching tag style) */
 .tier-badge {
   position: absolute;
   top: 8px;
   right: 8px;
   background: var(--c-accent-soft);
   color: #fff;
-  padding: .3rem .5rem;
-  font-size: .55rem;
+  padding: .22rem .5rem;
+  font-size: .52rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: .8px;
   text-transform: uppercase;
   border: 1px solid var(--c-accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
   z-index: 5;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Card Body */
+.tier-badge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg,
+      rgba(255, 255, 255, .08),
+      rgba(255, 255, 255, .08) 2px,
+      transparent 2px,
+      transparent 4px);
+  pointer-events: none;
+}
+
+/* Card Body (matching proj-body) */
 .card-body {
   display: flex;
   flex-direction: column;
-  padding: .8rem;
-  gap: .4rem;
+  padding: .85rem .85rem 1rem;
+  gap: .6rem;
   flex: 1;
 }
 
 .card-character {
-  font-size: .9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
-  line-height: 1.25;
+  line-height: 1.2;
+  letter-spacing: .5px;
   color: var(--c-text);
 }
 
 .card-series {
-  font-size: .65rem;
+  font-size: .68rem;
   margin: 0;
   color: var(--c-text-dim);
-  line-height: 1.3;
+  line-height: 1.35;
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  max-width: 56ch;
 }
 
 /* Star Rating */
 .star-rating {
   display: flex;
-  gap: .1rem;
+  gap: .15rem;
   margin-top: auto;
 }
 
@@ -361,11 +500,12 @@ figure.card-image {
 
 /* Card ID */
 .card-id {
-  font-size: .5rem;
+  font-size: .55rem;
   color: var(--c-text-dim);
   font-family: var(--mono);
   letter-spacing: .5px;
   margin-top: .2rem;
+  text-transform: uppercase;
 }
 
 /* Loading State */
@@ -405,12 +545,31 @@ figure.card-image {
   }
 }
 
-/* Error State */
+/* Error State (matching vlsm error-message) */
 .error-state {
   grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .8rem;
+  background: rgba(255, 75, 75, 0.1);
+  border: 1px solid rgba(255, 75, 75, 0.3);
+  padding: 2rem;
+  border-radius: 4px;
   text-align: center;
-  padding: 3rem;
+  font-family: var(--mono);
+}
+
+.error-state .error-icon {
+  font-size: 2rem;
+}
+
+.error-state p {
+  margin: 0;
+  font-size: .8rem;
+  font-weight: 600;
   color: #ff6b6b;
+  letter-spacing: .3px;
 }
 
 /* Empty State */
@@ -419,6 +578,8 @@ figure.card-image {
   text-align: center;
   padding: 3rem;
   color: var(--c-text-dim);
+  font-size: .85rem;
+  font-style: italic;
 }
 
 /* Image Placeholder */
@@ -434,24 +595,69 @@ figure.card-image {
   opacity: .5;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .dashboard-header {
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .gachapon-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .title-row {
     flex-direction: column;
     align-items: flex-start;
+    gap: .5rem;
+  }
+
+  .header-buttons {
+    align-self: flex-end;
   }
 
   .filters-row {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 1rem;
   }
 
-  .anime-card {
-    min-height: 280px;
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
   }
 }
 
-/* Light theme */
+@media (max-width: 640px) {
+  .anime-card {
+    min-height: 280px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .credits-badge {
+    flex-direction: column;
+    gap: .2rem;
+    text-align: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== LIGHT THEME ==================== */
+[data-theme="light"] .top-bar {
+  background: var(--c-bg-alt);
+}
+
+[data-theme="light"] .credits-link:hover {
+  color: var(--c-text);
+}
+
 [data-theme="light"] .stat-box {
   background: var(--c-panel);
 }
@@ -460,10 +666,29 @@ figure.card-image {
   background: var(--c-panel);
 }
 
-[data-theme="light"] .filter-select {
-  background: var(--c-panel);
+[data-theme="light"] .anime-card::before {
+  opacity: .4;
 }
 
 [data-theme="light"] .image-placeholder {
   background: linear-gradient(135deg, var(--c-bg-alt) 0%, var(--c-panel) 100%);
+}
+
+[data-theme="light"] .error-state {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+[data-theme="light"] .calc-input,
+[data-theme="light"] .filter-select {
+  background: var(--c-panel);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23121212' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .8rem center;
+}
+
+[data-theme="light"] .calc-input option,
+[data-theme="light"] .filter-select option {
+  background: var(--c-panel);
+  color: var(--c-text);
 }
