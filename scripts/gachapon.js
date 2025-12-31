@@ -6,7 +6,7 @@
 
 (function () {
     // ==================== API CONFIGURATION ====================
-    const API_BASE_URL = 'https://143.20.99.69:5000';
+    const API_BASE_URL = 'https://api.loonbac-dev.moe';
     const body = document.body;
     const themeBtn = document.getElementById('flipTheme');
 
@@ -261,4 +261,5 @@
         loadCollection();
     }
 })();
+
 
