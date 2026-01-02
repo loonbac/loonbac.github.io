@@ -138,19 +138,33 @@
         const platform = detectPlatform(info.url || videoUrlInput.value);
         const platformIcon = getPlatformIcon(platform);
         const platformName = getPlatformName(platform);
+        const isYouTube = info.is_youtube || false;
 
-        // Build formats options
+        // Build video formats options
         let formatsHTML = '';
         if (info.formats && info.formats.length > 0) {
             formatsHTML = info.formats.map(f => {
                 const quality = f.quality || f.format_note || 'N/A';
                 const ext = f.ext || 'mp4';
                 const size = f.filesize ? formatFileSize(f.filesize) : '';
-                return `<option value="${f.format_id}">${quality} (${ext}) ${size}</option>`;
+                return `<option value="${f.format_id}" data-type="video">${quality} (${ext}) ${size}</option>`;
             }).join('');
         } else {
-            formatsHTML = '<option value="best">Mejor calidad disponible</option>';
+            formatsHTML = '<option value="best" data-type="video">Mejor calidad disponible</option>';
         }
+
+        // Build audio formats for YouTube
+        let audioFormatsHTML = '';
+        if (isYouTube && info.audio_formats && info.audio_formats.length > 0) {
+            audioFormatsHTML = info.audio_formats.map(f => {
+                return `<option value="${f.format_id}" data-type="audio">🎵 ${f.description || f.quality}</option>`;
+            }).join('');
+        }
+
+        // Combine formats
+        const allFormatsHTML = isYouTube && audioFormatsHTML
+            ? `<optgroup label="📹 Video">${formatsHTML}</optgroup><optgroup label="🎵 Audio (MP3)">${audioFormatsHTML}</optgroup>`
+            : formatsHTML;
 
         videoResult.innerHTML = `
             <div class="video-preview">
@@ -176,13 +190,13 @@
                 <div class="format-section">
                     <label class="format-label" for="formatSelect">Formato:</label>
                     <select id="formatSelect" class="format-select">
-                        ${formatsHTML}
+                        ${allFormatsHTML}
                     </select>
                 </div>
                 <div class="download-actions">
                     <button class="download-btn" id="downloadBtn">
                         <span class="btn-icon">📥</span>
-                        Descargar Video
+                        <span id="downloadBtnText">Descargar Video</span>
                     </button>
                 </div>
             </div>
@@ -190,6 +204,20 @@
 
         // Attach download handler
         document.getElementById('downloadBtn').addEventListener('click', handleDownload);
+        
+        // Update button text based on selection
+        const formatSelect = document.getElementById('formatSelect');
+        const downloadBtnText = document.getElementById('downloadBtnText');
+        
+        formatSelect.addEventListener('change', () => {
+            const selectedOption = formatSelect.options[formatSelect.selectedIndex];
+            const type = selectedOption.getAttribute('data-type');
+            if (type === 'audio') {
+                downloadBtnText.textContent = 'Descargar Audio (MP3)';
+            } else {
+                downloadBtnText.textContent = 'Descargar Video';
+            }
+        });
     }
 
     // ==================== API FUNCTIONS ====================
@@ -232,17 +260,22 @@
     async function handleDownload() {
         const formatSelect = document.getElementById('formatSelect');
         const downloadBtn = document.getElementById('downloadBtn');
+        const downloadBtnText = document.getElementById('downloadBtnText');
         const format = formatSelect?.value || 'best';
         const url = videoUrlInput.value.trim();
 
         if (!url) return;
 
+        // Determine download type
+        const selectedOption = formatSelect.options[formatSelect.selectedIndex];
+        const type = selectedOption.getAttribute('data-type') || 'video';
+
         downloadBtn.disabled = true;
-        downloadBtn.innerHTML = '<span class="btn-icon">⏳</span> Preparando descarga...';
+        downloadBtnText.textContent = type === 'audio' ? 'Preparando audio...' : 'Preparando descarga...';
 
         try {
             // Open download in new tab/trigger download
-            const downloadUrl = `${API_BASE_URL}/api/video/download?url=${encodeURIComponent(url)}&format=${encodeURIComponent(format)}`;
+            const downloadUrl = `${API_BASE_URL}/api/video/download?url=${encodeURIComponent(url)}&format=${encodeURIComponent(format)}&type=${type}`;
 
             // Create a temporary link to trigger download
             const link = document.createElement('a');
@@ -253,19 +286,19 @@
             link.click();
             document.body.removeChild(link);
 
-            downloadBtn.innerHTML = '<span class="btn-icon">✅</span> Descarga iniciada';
+            downloadBtnText.textContent = 'Descarga iniciada';
 
             setTimeout(() => {
                 downloadBtn.disabled = false;
-                downloadBtn.innerHTML = '<span class="btn-icon">📥</span> Descargar Video';
+                downloadBtnText.textContent = type === 'audio' ? 'Descargar Audio (MP3)' : 'Descargar Video';
             }, 3000);
 
         } catch (error) {
             console.error('Error downloading:', error);
-            downloadBtn.innerHTML = '<span class="btn-icon">❌</span> Error';
+            downloadBtnText.textContent = 'Error';
             setTimeout(() => {
                 downloadBtn.disabled = false;
-                downloadBtn.innerHTML = '<span class="btn-icon">📥</span> Descargar Video';
+                downloadBtnText.textContent = type === 'audio' ? 'Descargar Audio (MP3)' : 'Descargar Video';
             }, 2000);
         }
     }
