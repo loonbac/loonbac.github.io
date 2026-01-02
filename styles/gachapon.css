@@ -343,7 +343,7 @@ figure.card-image {
   position: relative;
   width: 100%;
   aspect-ratio: 2/3;
-  background: #050505;
+  background: transparent;
   border-bottom: 2px solid var(--c-line);
   overflow: hidden;
   display: flex;
@@ -362,7 +362,6 @@ figure.card-image {
 }
 
 .anime-card:hover .card-image img {
-  transform: scale(1.05);
   filter: brightness(1) contrast(1.1);
 }
 
@@ -428,8 +427,7 @@ figure.card-image {
   text-transform: uppercase;
   border: 1px solid var(--c-accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
-  z-index: 5;
-  position: relative;
+  z-index: 10;
   overflow: hidden;
 }
 
