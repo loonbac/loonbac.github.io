@@ -93,17 +93,17 @@
 
 /* SVG Icons */
 .title-icon {
-    width: 1.2em;
-    height: 1.2em;
-    vertical-align: -0.15em;
-    margin-right: .3rem;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.1em;
+    margin-right: .2rem;
 }
 
 .btn-svg-icon {
-    width: 1rem;
-    height: 1rem;
+    width: .9rem;
+    height: .9rem;
     vertical-align: middle;
-    margin-right: .3rem;
+    margin-right: .2rem;
 }
 
 /* Section Title */
@@ -518,8 +518,8 @@
 }
 
 .platform-icon {
-    width: 2rem;
-    height: 2rem;
+    width: 1.4rem;
+    height: 1.4rem;
     fill: var(--c-text);
     transition: var(--transition);
 }
